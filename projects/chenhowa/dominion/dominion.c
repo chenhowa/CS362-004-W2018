@@ -667,11 +667,10 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   switch( card ) 
     {
     case adventurer:
-      adventurerEffect(state, currentPlayer);
-      return 0;
+      return adventurerEffect(state, currentPlayer);
+
     case council_room:
-      councilRoomEffect(state, currentPlayer, handPos);
-      return 0;
+      return councilRoomEffect(state, currentPlayer, handPos);
 
     case feast:
       //gain card with cost up to 5
@@ -727,8 +726,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 			
     case gardens:
-      gardensEffect();
-      return -1;
+      return gardensEffect();
 			
     case mine:
       j = state->hand[currentPlayer][choice1];  //store card we will trash
@@ -792,8 +790,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case smithy:
-      smithyEffect(state, currentPlayer, handPos);
-      return 0;
+      return smithyEffect(state, currentPlayer, handPos);
 		
     case village:
       //+1 Card
@@ -869,8 +866,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case minion:
-      minionEffect(state, currentPlayer, handPos, choice1, choice2);
-      return 0;
+      return minionEffect(state, currentPlayer, handPos, choice1, choice2);
 
     case steward:
       if (choice1 == 1)
