@@ -667,6 +667,9 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   switch( card ) 
     {
     case adventurer:
+      adventurerEffect(state, currentPlayer, temphand);
+      return 0;
+/*
       while(drawntreasure<2){
 	if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
 	  shuffle(currentPlayer, state);
@@ -686,7 +689,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	z=z-1;
       }
       return 0;
-			
+*/			
     case council_room:
       //+4 Cards
       for (i = 0; i < 4; i++)
@@ -1328,6 +1331,30 @@ int updateCoins(int player, struct gameState *state, int bonus)
   return 0;
 }
 
+int adventurerEffect (struct gameState *state, int currentPlayer, int temphand[]) {
+      int cardDrawn; //tracks the id of the drawn card
+      int drawntreasure = 0; //counts how much treasure the player has drawn
+      int z = 0; //This is a counter for the temp hand
+      while(drawntreasure<2){
+	if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
+	  shuffle(currentPlayer, state);
+	}
+	drawCard(currentPlayer, state);
+	cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
+	if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
+	  drawntreasure++;
+	else{
+	  temphand[z]=cardDrawn;
+	  state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
+	  z++;
+	}
+      }
+      while(z-1>=0){
+	state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
+	z=z-1;
+      }
+      return 0;
+}
 
 //end of dominion.c
 
