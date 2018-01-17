@@ -17,4 +17,5 @@ int adventurerEffect (struct gameState *state, int currentPlayer );
 int smithyEffect (struct gameState *state, int currentPlayer, int handPos);
 int councilRoomEffect (struct gameState *state, int currentPlayer, int handPos);
 int minionEffect (struct gameState *state, int currentPlayer, int handPos, int choice1, int choice2);
+int gardensEffect();
 #endif

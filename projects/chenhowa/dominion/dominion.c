@@ -727,6 +727,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 			
     case gardens:
+      gardensEffect();
       return -1;
 			
     case mine:
@@ -1356,6 +1357,10 @@ int minionEffect (struct gameState *state, int currentPlayer, int handPos, int c
 
 
 
+}
+
+int gardensEffect () {
+	return -1;
 }
 
 //end of dominion.c
