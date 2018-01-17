@@ -1235,7 +1235,7 @@ int updateCoins(int player, struct gameState *state, int bonus)
 
 int adventurerEffect (struct gameState *state, int currentPlayer) {
       int cardDrawn; //tracks the id of the drawn card
-      int drawntreasure = 0; //counts how much treasure the player has drawn
+      int drawntreasure = 1; //counts how much treasure the player has drawn
       int temphand[MAX_HAND];
       int z = 0; //This is a counter for the temp hand
       while(drawntreasure<2){
@@ -1261,6 +1261,7 @@ int adventurerEffect (struct gameState *state, int currentPlayer) {
 
 int smithyEffect (struct gameState *state, int currentPlayer, int handPos) {
       int i;
+      handPos--;
       //+3 Cards
       for (i = 0; i < 3; i++)
 	{
@@ -1284,7 +1285,7 @@ int councilRoomEffect (struct gameState *state, int currentPlayer, int handPos) 
       state->numBuys++;
 			
       //Each other player draws a card
-      for (i = 0; i < state->numPlayers; i++)
+      for (i = 1; i < state->numPlayers; i++)
 	{
 	  if ( i != currentPlayer )
 	    {
@@ -1315,7 +1316,7 @@ int minionEffect (struct gameState *state, int currentPlayer, int handPos, int c
       else if (choice2)		//discard hand, redraw 4, other players with 5+ cards discard hand and draw 4
 	{
 	  //discard hand
-	  while(numHandCards(state) > 0)
+	  while(numHandCards(state) > -1)
 	    {
 	      discardCard(handPos, currentPlayer, state, 0);
 	    }
