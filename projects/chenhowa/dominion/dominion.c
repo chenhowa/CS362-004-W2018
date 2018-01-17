@@ -673,30 +673,6 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       councilRoomEffect(state, currentPlayer, handPos);
       return 0;
 
-/*
-      //+4 Cards
-      for (i = 0; i < 4; i++)
-	{
-	  drawCard(currentPlayer, state);
-	}
-			
-      //+1 Buy
-      state->numBuys++;
-			
-      //Each other player draws a card
-      for (i = 0; i < state->numPlayers; i++)
-	{
-	  if ( i != currentPlayer )
-	    {
-	      drawCard(i, state);
-	    }
-	}
-			
-      //put played card in played card pile
-      discardCard(handPos, currentPlayer, state, 0);
-			
-      return 0;
-*/			
     case feast:
       //gain card with cost up to 5
       //Backup hand
@@ -817,17 +793,6 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     case smithy:
       smithyEffect(state, currentPlayer, handPos);
       return 0;
-
-/*
-      //+3 Cards
-      for (i = 0; i < 3; i++)
-	{
-	  drawCard(currentPlayer, state);
-	}
-			
-      //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
-*/
 		
     case village:
       //+1 Card
