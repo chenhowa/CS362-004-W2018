@@ -1,4 +1,4 @@
-/* Basic non-fuzzy unit tests for dominion.c functions
+/* Basic non-fuzzy unit tests for dominion.c function numHandCards
  *
  *
  */
