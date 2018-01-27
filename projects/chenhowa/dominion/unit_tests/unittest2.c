@@ -46,12 +46,12 @@ int testNumHandCards() {
         // Save the state of the game in preState
         memcpy(&preState, &postState, sizeof(struct gameState));
 
-        didAllPass = didAllPass && assertTrue(cards == numHandCards(postState), description_1);
+        didAllPass = didAllPass && assertTrue(player == whoseTurn(postState), description_1);
         printf("%i %s\n", player, "player")
 
         /**************TEST 2: unchanged game state *********************/
         mem_cmp_return = memcmp(&prestate, &postState, sizeof(struct gameState));
-        didAllPass = didAllPass && assertTrue(return_value == 0, description_2);
+        didAllPass = didAllPass && assertTrue(mem_cmp_return == 0, description_2);
         printf("%i %s\n", player, "player")
 
     }
@@ -66,9 +66,9 @@ int main(int argc, char *argv[])
     passing = testNumHandCards();
 
     if(passing) {
-        printf("SUCCESS: All tests passed!");
+        printf("whoseTurn(): SUCCESS: All tests passed!");
     } else {
-        printf("WARNING: At least one test failed!");
+        printf("whoseTurn(): WARNING: At least one test failed!");
     }
 
     return 0;

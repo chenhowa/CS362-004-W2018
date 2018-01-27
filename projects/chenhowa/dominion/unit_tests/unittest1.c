@@ -65,9 +65,9 @@ int main(int argc, char *argv[])
     passing = testNumHandCards();
 
     if(passing) {
-        printf("All tests passed!");
+        printf("numHandCards(): SUCCESS - All tests passed!");
     } else {
-        printf("One test did not pass");
+        printf("numHandCards(): WARNING - At least one test failed");
     }
 
     return 0;
