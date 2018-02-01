@@ -29,6 +29,10 @@ unitTest1: dominion.o rngs.o ./unit_tests/unittest1.c assertions.o
 unitTest2: dominion.o rngs.o ./unit_tests/unittest2.c assertions.o 
 	gcc -o unitTest2 -g ./unit_tests/unittest2.c dominion.o rngs.o assertions.o $(CFLAGS)
 
+unitTest3: dominion.o rngs.o ./unit_tests/unittest3.c assertions.o 
+	gcc -o unitTest3 -g ./unit_tests/unittest3.c dominion.o rngs.o assertions.o $(CFLAGS)
+
+
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)
 
@@ -44,4 +48,4 @@ player: player.c interface.o
 all: playdom player testDrawCard testBuyCard badTestDrawCard
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard *.exe badTestDrawCard unitTest1 unitTest2
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard *.exe badTestDrawCard unitTest1 unitTest2 unitTest3
