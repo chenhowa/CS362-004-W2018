@@ -5,12 +5,12 @@
  */
 
 
-#include "dominion.h"
-#include "dominion_helpers.h"
+#include "../dominion.h"
+#include "../dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>
-#include "assertions.h"
-#include "rngs.h"
+#include "../assertions.h"
+#include "../rngs.h"
 #include <stdlib.h>
 
 
@@ -22,7 +22,7 @@ int testNumHandCards() {
     int mem_cmp_return;
     int didAllPass = TRUE;
     int player;
-    int maxPlayer = 30;
+    int maxPlayer = 5;
 
     //Declarations to initialize game
     int numPlayers = 2;
@@ -32,27 +32,25 @@ int testNumHandCards() {
     struct gameState preState, postState;
 
     //First, initialize the game
-    initializeGame(numPlayers, kingdomCards, seed, postState);
+    initializeGame(numPlayers, kingdomCards, seed, &postState);
 
 
     description_1 = "whoseTurn returns the correct player";
     description_2 = "whoseTurn does not change the game state";
 
     /**************TEST 1: return value ****************************/
-    for(player = 0; player <= maxPlayer; maxPlayer++) {
+    for(player = 0; player <= maxPlayer; player++) {
         // Update hand count
-        postState->whoseTurn = player;
+        postState.whoseTurn = player;
 
         // Save the state of the game in preState
         memcpy(&preState, &postState, sizeof(struct gameState));
 
-        didAllPass = didAllPass && assertTrue(player == whoseTurn(postState), description_1);
-        printf("%i %s\n", player, "player")
-
+        didAllPass = didAllPass && assertTrue(player == whoseTurn(&postState), description_1);
         /**************TEST 2: unchanged game state *********************/
-        mem_cmp_return = memcmp(&prestate, &postState, sizeof(struct gameState));
+        mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
         didAllPass = didAllPass && assertTrue(mem_cmp_return == 0, description_2);
-        printf("%i %s\n", player, "player")
+        printf("%i %s\n", player, "player");
 
     }
 
@@ -70,6 +68,7 @@ int main(int argc, char *argv[])
     } else {
         printf("whoseTurn(): WARNING: At least one test failed!");
     }
+    printf("\n");
 
     return 0;
 }

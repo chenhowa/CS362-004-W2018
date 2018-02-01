@@ -2,6 +2,8 @@ CFLAGS = -Wall -fpic -coverage -lm
 
 rngs.o: rngs.h rngs.c
 	gcc -c rngs.c -g  $(CFLAGS)
+assertions.o: assertions.h assertions.c 
+	gcc -c assertions.c -g $(CFLAGS)
 
 dominion.o: dominion.h dominion.c rngs.o
 	gcc -c dominion.c -g  $(CFLAGS)
@@ -21,6 +23,12 @@ testBuyCard: testDrawCard.c dominion.o rngs.o
 testAll: dominion.o testSuite.c
 	gcc -o testSuite testSuite.c -g  dominion.o rngs.o $(CFLAGS)
 
+unitTest1: dominion.o rngs.o ./unit_tests/unittest1.c assertions.o 
+	gcc -o unitTest1 -g ./unit_tests/unittest1.c dominion.o rngs.o assertions.o $(CFLAGS)
+
+unitTest2: dominion.o rngs.o ./unit_tests/unittest2.c assertions.o 
+	gcc -o unitTest2 -g ./unit_tests/unittest2.c dominion.o rngs.o assertions.o $(CFLAGS)
+
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)
 
@@ -36,4 +44,4 @@ player: player.c interface.o
 all: playdom player testDrawCard testBuyCard badTestDrawCard
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard *.exe badTestDrawCard unitTest1 unitTest2

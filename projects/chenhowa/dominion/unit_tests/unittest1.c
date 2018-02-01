@@ -4,12 +4,12 @@
  */
 
 
-#include "dominion.h"
-#include "dominion_helpers.h"
+#include "../dominion.h"
+#include "../dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>
-#include "assertions.h"
-#include "rngs.h"
+#include "../assertions.h"
+#include "../rngs.h"
 #include <stdlib.h>
 
 
@@ -20,7 +20,7 @@ int testNumHandCards() {
     char *description_2;
     int mem_cmp_return;
     int didAllPass = TRUE;
-    int maxHandCards = 20;
+    int maxHandCards = 5;
     int cards;
 
     //Declarations to initialize game
@@ -31,7 +31,7 @@ int testNumHandCards() {
     struct gameState preState, postState;
 
     //First, initialize the game
-    initializeGame(numPlayers, kingdomCards, seed, postState);
+    initializeGame(numPlayers, kingdomCards, seed, &postState);
 
 
     description_1 = "numHandCards returns the correct number of cards";
@@ -40,18 +40,17 @@ int testNumHandCards() {
     /**************TEST 1: return value ****************************/
     for(cards = 0; cards <= maxHandCards; cards++) {
         // Update hand count
-        postState->handCount[ whoseTurn(postState) ] = cards;
+        postState.handCount[ postState.whoseTurn ] = cards;
 
         // Save the state of the game in preState
         memcpy(&preState, &postState, sizeof(struct gameState));
 
-        didAllPass = didAllPass && assertTrue(cards == numHandCards(postState), description_1);
-        printf("%i %s\n", cards, "cards")
+        didAllPass = didAllPass && assertTrue(cards == numHandCards(&postState), description_1);
 
         /**************TEST 2: unchanged game state *********************/
-        mem_cmp_return = memcmp(&prestate, &postState, sizeof(struct gameState));
-        didAllPass = didAllPass && assertTrue(return_value == 0, description_2);
-        printf("%i %s\n", cards, "cards")
+        mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
+        didAllPass = didAllPass && assertTrue(mem_cmp_return == 0, description_2);
+        printf("%i %s\n", cards, "cards");
 
     }
 
@@ -69,6 +68,7 @@ int main(int argc, char *argv[])
     } else {
         printf("numHandCards(): WARNING - At least one test failed");
     }
+    printf("\n");
 
     return 0;
 }

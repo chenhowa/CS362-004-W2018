@@ -11,8 +11,6 @@
 #include <string.h> //for memcp like functions
 #include "assertions.h"
 
-#define TRUE 1   //set up boolean handling
-#define FALSE 0
 
 int assertTrue(int condition, char* test_description) {
     printf("%s", test_description);
