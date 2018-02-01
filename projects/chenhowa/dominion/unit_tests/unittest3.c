@@ -33,6 +33,7 @@ int testIsGameOver() {
     struct gameState preState, postState, idealState;
 
     //First, initialize the game
+    memset(&postState, 23, sizeof(struct gameState));   // clear the game state
     initializeGame(numPlayers, kingdomCards, seed, &postState);
 
 
@@ -53,12 +54,12 @@ int testIsGameOver() {
 
     // Check that the game is not over
     description = "Game is not over when conditions are not satisfied";
-    didAllPass = didAllPass && assertTrue(gameOver != isGameOver(&postState), description);
+    didAllPass = assertTrue(gameOver != isGameOver(&postState), description) && didAllPass;
 
     // Check that the game state was not changed
     description = "Game state was not changed";
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
-    didAllPass = didAllPass && assertTrue(mem_cmp_return == 0, description);
+    didAllPass = assertTrue(mem_cmp_return == 0, description) && didAllPass;
 
     /*********   TEST 2: Game is over if only province pile is empty  */
     // Restore game state and adjust it.
@@ -70,12 +71,12 @@ int testIsGameOver() {
 
     //Check that the game is over 
     description = "Game is over when province supply pile is empty";
-    didAllPass = didAllPass && assertTrue (gameOver == isGameOver(&postState), description);
+    didAllPass = assertTrue (gameOver == isGameOver(&postState), description) && didAllPass;
 
     //Check that the game was not changed
     description = "Game state was not changed";
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
-    didAllPass = didAllPass && assertTrue(mem_cmp_return == 0, description);
+    didAllPass = assertTrue(mem_cmp_return == 0, description) && didAllPass;
 
     /**********  TEST 3: Games is over if only 3 supply piles are empty */
     // Restore game state and adjust it.
@@ -89,14 +90,12 @@ int testIsGameOver() {
 
     //Check that that the game is over
     description = "Game is over when 3 supply piles are empty";
-    didAllPass = didAllPass && assertTrue(gameOver == isGameOver(&postState), description);
+    didAllPass = assertTrue(gameOver == isGameOver(&postState), description) && didAllPass;
 
     //Check that the game was not changed
     description = "Game state was not changed";
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
-    didAllPass = didAllPass && assertTrue(mem_cmp_return == 0, description);
-
-    printf("\nFUCK YOU\n");
+    didAllPass = assertTrue(mem_cmp_return == 0, description) && didAllPass;
 
     /***********  TEST 4: Game is over if 3 piles are empty AND province is empty */
     // Restore game state and adjust it.
@@ -110,12 +109,12 @@ int testIsGameOver() {
 
     //Check that that the game is over
     description = "Game is over when both conditions apply";
-    didAllPass = didAllPass && assertTrue (gameOver == isGameOver(&postState), description);
+    didAllPass = assertTrue (gameOver == isGameOver(&postState), description) && didAllPass;
     
     //Check that the game was not changed
     description = "Game state was not changed";
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
-    didAllPass = didAllPass && assertTrue(mem_cmp_return == 0, description);
+    didAllPass = assertTrue(mem_cmp_return == 0, description) && didAllPass;
 
     fflush(stdout);
 

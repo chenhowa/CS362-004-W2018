@@ -18,6 +18,8 @@ int assertTrue(int condition, char* test_description) {
         fprintf(stderr,  "...PASSED\n");
         return TRUE;
     }
-    fprintf(stderr, "...FAILED\n");
-    return FALSE;
+    else {
+        fprintf(stderr, "...FAILED\n");
+        return FALSE;
+    }
 }
