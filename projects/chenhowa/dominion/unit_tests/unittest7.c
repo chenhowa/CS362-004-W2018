@@ -59,7 +59,6 @@ int testCouncilRoom() {
 
     printf("TEST councilRoomEffect\n");
 
-    /******** Test 1: Return value is correct ******/
     memcpy(&preState, &postState, sizeof(struct gameState));
     description = "Test 1: Return value is correct";
     return_value = councilRoomEffect(&postState, player, 0);
