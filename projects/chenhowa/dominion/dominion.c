@@ -1235,9 +1235,10 @@ int updateCoins(int player, struct gameState *state, int bonus)
 
 int adventurerEffect (struct gameState *state, int currentPlayer) {
     int cardDrawn; //tracks the id of the drawn card
-    int drawntreasure = 1; //counts how much treasure the player has drawn
+    int drawntreasure = 0; //counts how much treasure the player has drawn
     int temphand[MAX_HAND];
     int z = 0; //This is a counter for the temp hand
+    int loopCount = 0;
     while(drawntreasure<2){
         if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
             shuffle(currentPlayer, state);
@@ -1251,6 +1252,12 @@ int adventurerEffect (struct gameState *state, int currentPlayer) {
             state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
             z++;
         }
+
+        if(loopCount > 1) {
+            return -1; 
+        }
+
+        loopCount++;
     }
     while(z-1>=0){
         state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
