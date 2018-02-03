@@ -7,12 +7,12 @@
  */
 
 
-#include "dominion.h"
-#include "dominion_helpers.h"
+#include "../dominion.h"
+#include "../dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>
-#include "assertions.h"
-#include "rngs.h"
+#include "../assertions.h"
+#include "../rngs.h"
 #include <stdlib.h>
 
 
@@ -26,6 +26,7 @@ int testSmithy() {
     int numDeck;
     int player;
     int return_value;
+    int cardsCorrect = FALSE;
 
     //Declarations to initialize game
     int numPlayers = 2;
@@ -35,38 +36,54 @@ int testSmithy() {
     struct gameState preState, postState;
 
     //First, initialize the game
-    initializeGame(numPlayers, kingdomCards, seed, postState);
+    initializeGame(numPlayers, kingdomCards, seed, &postState);
+    player = postState.whoseTurn;
 
+    //Make sure player has enough cards
+    postState.deckCount[player] = 5;
+    postState.deck[player][postState.deckCount[player] - 1] = adventurer;
+    postState.deck[player][postState.deckCount[player] - 2] = adventurer;
+    postState.deck[player][postState.deckCount[player] - 3] = adventurer;
 
-    /************  TEST 1: return value is correct *****/
-    description = "Return value is 0";
     //First, save preState and relevant values.
     memcpy(&preState, &postState, sizeof(struct gameState));
-    player = postState->whoseTurn;
-    numDeck = postState->deckCount[player];
-    numHand = postState->handCount[player];
+    numDeck = postState.deckCount[player];
+    numHand = postState.handCount[player];
 
-    return_value = smithyEffect(postState, player, 1); 
+    /************  TEST 1: return value is correct *****/
+    description = "Test 1: Return value is 0";
+    return_value = smithyEffect(&postState, player, 1); 
 
-    didAllPass = didAllPass && assertTrue(return_value == 0, description1);
+    didAllPass = assertTrue(return_value == 0, description) && didAllPass;
 
     /***********   TEST 2: player received 3 extra card in hand ****/
-    description = "Player received 3 extra cards";
-    didAllPass = didAllPass && assertTrue(numHand + 3 == postState->handCount[player],
-                    description);
-
+    //Assumes drawCard works correctly
+    description = "Test 2: Player received 3 extra cards";
+    didAllPass = assertTrue(numHand + 3 == postState.handCount[player],
+                    description) && didAllPass;
 
     /**********    TEST 3: The 3 extra cards came from the player's own deck ****/
-    description = "The 3 cards came from the player's deck";
-    didAllPass = didAllPass && assertTrue(numDeck - 3 == postState->deckCount[player], 
-            description);
+    //Assumes drawCard works correctly
+    description = "Test 3: The 3 cards came from the player's deck";
+    didAllPass = assertTrue(numDeck - 3 == postState.deckCount[player], 
+            description) && didAllPass;
 
-    /*********    Test 4: No other changes were made to the game state ****/
-    description = "No other changes were made to the game state";
-    preState->deckCount[player] -= 3;
-    preState->handcount[player] += 3;
-    mem_cmp_return = memcmp(&preState, postState, sizeof(struct gameState));
-    didAllPass = didAllPass && assertTrue(mem_cmp_return == 0, description);
+    /*********     TEST 4: The 3 extra cards in hand are the correct cards ****/
+    description = "Test 4: The 3 cards in hand are the correct cards";
+    cardsCorrect = postState.hand[player][postState.handCount[player] - 1] == adventurer &&
+                    postState.hand[player][postState.handCount[player] - 2] == adventurer &&
+                    postState.hand[player][postState.handCount[player] - 3] == adventurer;
+    didAllPass = assertTrue(cardsCorrect, description) && didAllPass;
+
+    /*********    Test 5: No other changes were made to the game state ****/
+    description = "Test 5: No other changes were made to the game state";
+    preState.deckCount[player] -= 3;  //decrease cards in deck
+    preState.handCount[player] += 3;  // increase cards in hand
+    preState.hand[player][preState.handCount[player] - 1] = adventurer;
+    preState.hand[player][preState.handCount[player] - 2] = adventurer;
+    preState.hand[player][preState.handCount[player] - 3] = adventurer;
+    mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
+    didAllPass = assertTrue(mem_cmp_return == 0, description) && didAllPass;
 
     return didAllPass;
 }
@@ -82,6 +99,7 @@ int main(int argc, char *argv[])
     } else {
         printf("smithEffect(): WARNING: At least one test failed");
     }
+    printf("\n");
 
     return 0;
 }
