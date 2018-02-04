@@ -1253,7 +1253,7 @@ int adventurerEffect (struct gameState *state, int currentPlayer) {
             z++;
         }
 
-        if(loopCount > 1) {
+        if(loopCount > 1000) {
             return -1; 
         }
 

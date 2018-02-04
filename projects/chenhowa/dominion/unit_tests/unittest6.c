@@ -7,7 +7,7 @@
  *
  */
 
-
+#include "../logMismatch.h"
 #include "../dominion.h"
 #include "../dominion_helpers.h"
 #include <string.h>
@@ -55,20 +55,36 @@ int testAdventurer() {
 
     description = "Test 1: return value is correct";
     return_value = adventurerEffect(&postState, player);
-    didAllPass = assertTrue(return_value == 0, description) && didAllPass;
+    condition = return_value == 0;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("return", 0, return_value);
+    }
 
     description = "Test 1: player's deck has two fewer cards";
-    didAllPass = assertTrue(postState.deckCount[player] == preState.deckCount[player] - 2,
+    condition = postState.deckCount[player] == preState.deckCount[player] - 2;
+    didAllPass = assertTrue(condition ,
                     description) && didAllPass;
+    if(!condition) {
+        logMisMatch("count", preState.deckCount[player] - 2, postState.deckCount[player]); 
+    }
 
     description = "Test 1: player's hand has two more cards";
-    didAllPass = assertTrue(postState.handCount[player] == preState.handCount[player] + 2, 
+    condition = postState.handCount[player] == preState.handCount[player] + 2;
+    didAllPass = assertTrue(condition , 
                     description) && didAllPass;
+    if(!condition) {
+        logMisMatch("count", preState.handCount[player] + 2, postState.handCount[player]); 
+    }
 
     description = "Test 1: Those two new cards are the copper and silver";
     condition = postState.hand[player][postState.handCount[player] - 1] == silver &&
                 postState.hand[player][postState.handCount[player] - 2] == copper;
     didAllPass = assertTrue(condition, description) && didAllPass;
+    if(!condition) {
+        logMisMatch("top card", silver, postState.hand[player][postState.handCount[player] - 1]); 
+        logMisMatch("bottom card", copper, postState.hand[player][postState.handCount[player] - 2]); 
+    }
 
     description = "Test 1: No other changes were made";
     preState.deckCount[player] -= 2;
@@ -95,32 +111,59 @@ int testAdventurer() {
 
     description = "Test 2: Return value is correct";
     return_value = adventurerEffect(&postState, player);
-    didAllPass = assertTrue(return_value == 0, description) && didAllPass;
+    condition = return_value == 0;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("return", 0, return_value); 
+    }
 
     description = "Test 2: player's hand has two more cards";
-    didAllPass = assertTrue(postState.handCount[player] == preState.handCount[player] + 2, 
+    condition = postState.handCount[player] == preState.handCount[player] + 2;
+    didAllPass = assertTrue(condition , 
                     description) && didAllPass;
+    if(!condition) {
+        logMisMatch("cards", preState.handCount[player] + 2, postState.handCount[player]); 
+    }
 
     description = "Test 2: Those two new cards are the gold and silver";
     condition = postState.hand[player][postState.handCount[player] - 1] == silver &&
                 postState.hand[player][postState.handCount[player] - 2] == gold;
     didAllPass = assertTrue(condition, description) && didAllPass;
+    if(!condition) {
+        logMisMatch("top card", silver, postState.hand[player][postState.handCount[player] - 1]); 
+        logMisMatch("bottom card", gold, postState.hand[player][postState.handCount[player] - 2]); 
+    }
 
     description = "Test 2: player's deck now has no cards at all";
-    didAllPass = assertTrue(postState.deckCount[player] == 0, description) && didAllPass;
+    condition = postState.deckCount[player] == 0;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("count", 0, postState.deckCount[player]); 
+    }
 
     description = "Test 2: discardCount has 3 more cards";
-    didAllPass = assertTrue(postState.discardCount[player] ==
-                preState.discardCount[player] + 3, description) && didAllPass;
+    condition = postState.discardCount[player] == preState.discardCount[player] + 3;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("count", preState.discardCount[player] + 3, postState.discardCount[player]); 
+    }
     
     description = "Test 2: the three discarded cards are all adventurers";
     condition = postState.discard[player][postState.discardCount[player] - 1] == adventurer &&
         postState.discard[player][postState.discardCount[player] - 2] == adventurer &&
         postState.discard[player][postState.discardCount[player] - 3] == adventurer;
     didAllPass = assertTrue(condition, description) && didAllPass;
+    if(!condition) {
+        logMisMatch("top card", adventurer, postState.discard[player][postState.discardCount[player] - 1]); 
+        logMisMatch("middle card", adventurer, postState.discard[player][postState.discardCount[player] - 2]); 
+        logMisMatch("bottom card", adventurer, postState.discard[player][postState.discardCount[player] - 3]); 
+    }
 
     description = "Test 2: No other changes were made";
     preState.deckCount[player] = 0;
+    preState.handCount[player] += 2;
+    preState.hand[player][preState.handCount[player] - 1] = silver;
+    preState.hand[player][preState.handCount[player] - 2] = gold;
     preState.discardCount[player] += 3;
     preState.discard[player][preState.discardCount[player] - 1] = adventurer;
     preState.discard[player][preState.discardCount[player] - 2] = adventurer;
@@ -141,15 +184,25 @@ int testAdventurer() {
 
     description = "Test 3: Return value is correct, proving no infinite loop possible";
     return_value = adventurerEffect(&postState, player);
-    didAllPass = assertTrue(return_value == 0, description) && didAllPass;
+    condition = return_value == 0;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("return", 0, return_value); 
+    }
 
     description = "Test 3: Player's handCount has increased by 1";
-    didAllPass = assertTrue(postState.handCount[player] == preState.handCount[player] + 1,
-                description) && didAllPass;
+    condition = postState.handCount[player] == preState.handCount[player] + 1;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("count", preState.handCount[player] + 1, postState.handCount[player]); 
+    }
 
     description = "Test 3: The new card is the gold";
-    didAllPass = assertTrue(postState.hand[player][postState.handCount[player] - 1] == gold,
-                description) && didAllPass;
+    condition = postState.hand[player][postState.handCount[player] - 1] == gold;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("card", gold, postState.hand[player][postState.handCount[player] - 1] );
+    }
 
     //Can't test that no other changes were made or the state of the discard pile, as adventurerEffect contains shuffle,
     // which randomizes the game state a whoooole bunch
@@ -169,16 +222,27 @@ int testAdventurer() {
 
     description = "Test 4: Return value is correct, proving no infinite loop possible";
     return_value = adventurerEffect(&postState, player);
-    didAllPass = assertTrue(return_value == 0, description) && didAllPass;
+    condition = return_value == 0;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("return", 0, return_value); 
+    }
 
     description = "Test 4: Player's handCount has increased by 2";
-    didAllPass = assertTrue(postState.handCount[player] == preState.handCount[player] + 2,
-                description) && didAllPass;
+    condition = postState.handCount[player] == preState.handCount[player] + 2;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("count", preState.handCount[player] + 2, postState.handCount[player]); 
+    }
 
     description = "Test 4: The new cards are the gold and copper";
     condition = postState.hand[player][postState.handCount[player] - 1] == gold &&
                 postState.hand[player][postState.handCount[player] - 2] == copper;
     didAllPass = assertTrue(condition, description) && didAllPass;
+    if(!condition) {
+        logMisMatch("top card", gold, postState.hand[player][postState.handCount[player] - 1]); 
+        logMisMatch("top card", copper, postState.hand[player][postState.handCount[player] - 2]); 
+    }
 
     /* Can't test discard pile or that no other changes were made, as the shuffle function in adventurerEffect randomizes the game state a wwhoooooole bunch 
      */
