@@ -55,7 +55,7 @@ interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)
 
 runtests: testDrawCard 
-	./testDrawCard &> unittestresult.out
+	./testDrawCard > unittestresult.out
 	gcov dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
