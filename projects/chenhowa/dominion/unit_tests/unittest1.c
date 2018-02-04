@@ -22,6 +22,7 @@ int testNumHandCards() {
     int didAllPass = TRUE;
     int maxHandCards = 5;
     int cards;
+    int condition;
 
     //Declarations to initialize game
     int numPlayers = 2;
@@ -39,18 +40,26 @@ int testNumHandCards() {
 
     /**************TEST 1: return value ****************************/
     for(cards = 0; cards <= maxHandCards; cards++) {
+        printf("Testing a hand of %i cards\n", cards);
         // Update hand count
         postState.handCount[ postState.whoseTurn ] = cards;
 
         // Save the state of the game in preState
-        memcpy(&preState, &postState, sizeof(struct gameState));
 
-        didAllPass = didAllPass && assertTrue(cards == numHandCards(&postState), description_1);
+        memcpy(&preState, &postState, sizeof(struct gameState));
+        condition = cards == numHandCards(&postState);
+        didAllPass = assertTrue(condition, description_1) && didAllPass;
+        if(!condition) {
+            printf("\texpected cards = %i, got cards = %i", cards, numHandCards(&postState)); 
+        }
 
         /**************TEST 2: unchanged game state *********************/
         mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
-        didAllPass = didAllPass && assertTrue(mem_cmp_return == 0, description_2);
-        printf("%i %s\n", cards, "cards");
+        condition = mem_cmp_return == 0;
+        didAllPass = assertTrue(condition, description_2) && didAllPass;
+        if(!condition) {
+            printf("\texpected return = 0, got return = %i", mem_cmp_return); 
+        }
 
     }
 
