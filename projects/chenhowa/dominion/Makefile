@@ -39,17 +39,17 @@ unitTest3: dominion.o rngs.o ./unit_tests/unittest3.c assertions.o
 unitTest4: dominion.o rngs.o ./unit_tests/unittest4.c assertions.o 
 	gcc -o unitTest4 -g ./unit_tests/unittest4.c dominion.o rngs.o assertions.o $(CFLAGS)
 
-unitTest5: dominion.o rngs.o ./unit_tests/unittest5.c assertions.o logMismatch.o
-	gcc -o unitTest5 -g ./unit_tests/unittest5.c dominion.o rngs.o assertions.o logMismatch.o $(CFLAGS)
+cardTest1: dominion.o rngs.o ./unit_tests/cardtest1.c assertions.o logMismatch.o
+	gcc -o cardTest1 -g ./unit_tests/cardtest1.c dominion.o rngs.o assertions.o logMismatch.o $(CFLAGS)
 
-unitTest6: dominion.o rngs.o ./unit_tests/unittest6.c assertions.o logMismatch.o
-	gcc -o unitTest6 -g ./unit_tests/unittest6.c dominion.o rngs.o assertions.o logMismatch.o $(CFLAGS)
+cardTest2: dominion.o rngs.o ./unit_tests/cardtest2.c assertions.o logMismatch.o
+	gcc -o cardTest2 -g ./unit_tests/cardtest2.c dominion.o rngs.o assertions.o logMismatch.o $(CFLAGS)
 
-unitTest7: dominion.o rngs.o ./unit_tests/unittest7.c assertions.o logMismatch.o
-	gcc -o unitTest7 -g ./unit_tests/unittest7.c dominion.o rngs.o assertions.o logMismatch.o $(CFLAGS)
+cardTest3: dominion.o rngs.o ./unit_tests/cardtest3.c assertions.o logMismatch.o
+	gcc -o cardTest3 -g ./unit_tests/cardtest3.c dominion.o rngs.o assertions.o logMismatch.o $(CFLAGS)
 
-unitTest8: dominion.o rngs.o ./unit_tests/unittest8.c assertions.o logMismatch.o
-	gcc -o unitTest8 -g ./unit_tests/unittest8.c dominion.o rngs.o assertions.o logMismatch.o $(CFLAGS)
+cardTest4: dominion.o rngs.o ./unit_tests/cardtest4.c assertions.o logMismatch.o
+	gcc -o cardTest4 -g ./unit_tests/cardtest4.c dominion.o rngs.o assertions.o logMismatch.o $(CFLAGS)
 
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)
@@ -59,6 +59,30 @@ runtests: testDrawCard
 	gcov dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
+noisytests: unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2 cardTest3 cardTest4
+	./unitTest1 > unittestresults.out
+	./unitTest2 >> unittestresults.out
+	./unitTest3 >> unittestresults.out
+	./unitTest4 >> unittestresults.out
+	./cardTest1 >> unittestresults.out
+	./cardTest2 >> unittestresults.out
+	./cardTest3 >> unittestresults.out
+	./cardTest4 >> unittestresults.out
+	gcov dominion.c >> unittestresults.out
+	cat dominion.c.gcov >> unittestresults.out
+
+quiettests: unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2 cardTest3 cardTest4
+	./unitTest1 | grep -E -i "success|warning" > unittestresults.out
+	./unitTest2 | grep -E -i "success|warning" >> unittestresults.out
+	./unitTest3 | grep -E -i "success|warning" >> unittestresults.out
+	./unitTest4 | grep -E -i "success|warning" >> unittestresults.out
+	./cardTest1 | grep -E -i "success|warning" >> unittestresults.out
+	./cardTest2 | grep -E -i "success|warning" >> unittestresults.out
+	./cardTest3 | grep -E -i "success|warning" >> unittestresults.out
+	./cardTest4 | grep -E -i "success|warning" >> unittestresults.out
+	gcov dominion.c >> unittestresults.out
+	cat dominion.c.gcov >> unittestresults.out
+
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
@@ -66,4 +90,4 @@ player: player.c interface.o
 all: playdom player testDrawCard testBuyCard badTestDrawCard
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard *.exe badTestDrawCard unitTest1 unitTest2 unitTest3 unitTest4 unitTest5 unitTest6 unitTest7 unitTest8
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard *.exe badTestDrawCard unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2 cardTest3 cardTest4
