@@ -217,6 +217,7 @@ int testMinion() {
     for(i = count - 5; i < count; i++) {
         condition = (postState.discard[player][i] == adventurer) && condition; 
     }
+    didAllPass = assertTrue(condition, description) && didAllPass;
 
     description = "Test 4: Other with 6 cards in hand has handCount of 4";
     player = 0;
@@ -253,6 +254,7 @@ int testMinion() {
     for(i = count - 6; i < count; i++) {
         condition = (postState.discard[player][i] == adventurer) && condition; 
     }
+    didAllPass = assertTrue(condition, description) && didAllPass;
 
     /* FINAL CHECK */
     description = "Test 5: No other changes occurred: other with 4 cards in hand experienced no effects";

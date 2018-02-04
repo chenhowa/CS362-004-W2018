@@ -1235,7 +1235,7 @@ int updateCoins(int player, struct gameState *state, int bonus)
 
 int adventurerEffect (struct gameState *state, int currentPlayer) {
     int cardDrawn; //tracks the id of the drawn card
-    int drawntreasure = 0; //counts how much treasure the player has drawn
+    int drawntreasure = 1; //counts how much treasure the player has drawn
     int temphand[MAX_HAND];
     int z = 0; //This is a counter for the temp hand
     int loopCount = 0;
