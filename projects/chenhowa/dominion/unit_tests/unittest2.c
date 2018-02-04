@@ -14,8 +14,8 @@
 #include <stdlib.h>
 
 
-//Contains all tests for numHandCards()
-int testNumHandCards() {
+//Contains all tests for whoseTurn()
+int testWhoseTurn() {
     //Declaration of testing-specific variables
     char *description_1;
     char *description_2;
@@ -70,7 +70,7 @@ int testNumHandCards() {
 int main(int argc, char *argv[])
 {
     int passing = FALSE;
-    passing = testNumHandCards();
+    passing = testWhoseTurn();
 
     if(passing) {
         printf("whoseTurn(): SUCCESS: All tests passed!");

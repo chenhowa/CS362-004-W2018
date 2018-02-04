@@ -24,6 +24,7 @@ int testIsGameOver() {
     int i;
     int enoughCards = 4;
     int gameOver = 1;
+    int condition;
 
     //Declarations to initialize game
     int numPlayers = 2;
@@ -53,11 +54,15 @@ int testIsGameOver() {
     memcpy(&preState, &postState, sizeof(struct gameState));
 
     // Check that the game is not over
-    description = "Game is not over when conditions are not satisfied";
-    didAllPass = assertTrue(gameOver != isGameOver(&postState), description) && didAllPass;
+    description = "Test 1: Game is not over when conditions are not satisfied";
+    condition = gameOver != isGameOver(&postState);
+    didAllPass = assertTrue(condition, description) && didAllPass;
+    if(!condition) {
+        printf("\texpected gameOver = %i got %i\n", FALSE, isGameOver(&postState) );
+    }
 
     // Check that the game state was not changed
-    description = "Game state was not changed";
+    description = "Test 1: Game state was not changed";
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
     didAllPass = assertTrue(mem_cmp_return == 0, description) && didAllPass;
 
@@ -71,7 +76,11 @@ int testIsGameOver() {
 
     //Check that the game is over 
     description = "Game is over when province supply pile is empty";
-    didAllPass = assertTrue (gameOver == isGameOver(&postState), description) && didAllPass;
+    condition = gameOver == isGameOver(&postState);
+    didAllPass = assertTrue (condition, description) && didAllPass;
+    if(!condition) {
+        printf("\texpected gameOver = %i, got %i\n", TRUE, isGameOver(&postState)); 
+    }
 
     //Check that the game was not changed
     description = "Game state was not changed";
@@ -90,7 +99,11 @@ int testIsGameOver() {
 
     //Check that that the game is over
     description = "Game is over when 3 supply piles are empty";
-    didAllPass = assertTrue(gameOver == isGameOver(&postState), description) && didAllPass;
+    condition = gameOver == isGameOver(&postState);
+    didAllPass = assertTrue(condition, description) && didAllPass;
+    if(!condition) {
+        printf("\texpected gameOver = %i, got %i\n", TRUE, isGameOver(&postState)); 
+    }
 
     //Check that the game was not changed
     description = "Game state was not changed";
@@ -109,7 +122,11 @@ int testIsGameOver() {
 
     //Check that that the game is over
     description = "Game is over when both conditions apply";
-    didAllPass = assertTrue (gameOver == isGameOver(&postState), description) && didAllPass;
+    condition = gameOver == isGameOver(&postState);
+    didAllPass = assertTrue (condition, description) && didAllPass;
+    if(!condition) {
+        printf("\texpected gameOver = %i, got %i\n", TRUE, isGameOver(&postState)); 
+    }
     
     //Check that the game was not changed
     description = "Game state was not changed";
