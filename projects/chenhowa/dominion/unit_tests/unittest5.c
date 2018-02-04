@@ -27,6 +27,7 @@ int testSmithy() {
     int player;
     int return_value;
     int cardsCorrect = FALSE;
+    int condition;
 
     //Declarations to initialize game
     int numPlayers = 2;
@@ -85,6 +86,11 @@ int testSmithy() {
                     postState.hand[player][postState.handCount[player] - 2] == adventurer &&
                     postState.hand[player][postState.handCount[player] - 3] == adventurer;
     didAllPass = assertTrue(cardsCorrect, description) && didAllPass;
+    if(! cardsCorrect) {
+        logMisMatch("top card", adventurer, postState.hand[player][postState.handCount[player] - 1]); 
+        logMisMatch("middle card", adventurer, postState.hand[player][postState.handCount[player] - 2]); 
+        logMisMatch("bottom card", adventurer, postState.hand[player][postState.handCount[player] - 3]); 
+    }
 
     /*********    Test 5: No other changes were made to the game state ****/
     description = "Test 5: No other changes were made to the game state";
