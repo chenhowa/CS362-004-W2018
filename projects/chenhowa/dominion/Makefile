@@ -2,8 +2,12 @@ CFLAGS = -Wall -fpic -coverage -lm
 
 rngs.o: rngs.h rngs.c
 	gcc -c rngs.c -g  $(CFLAGS)
+
 assertions.o: assertions.h assertions.c 
 	gcc -c assertions.c -g $(CFLAGS)
+
+logMisMatch.o: logMismatch.h logMismatch.c 
+	gcc -c logMismatch.c -g $(CFLAGS)
 
 dominion.o: dominion.h dominion.c rngs.o
 	gcc -c dominion.c -g  $(CFLAGS)
@@ -35,17 +39,17 @@ unitTest3: dominion.o rngs.o ./unit_tests/unittest3.c assertions.o
 unitTest4: dominion.o rngs.o ./unit_tests/unittest4.c assertions.o 
 	gcc -o unitTest4 -g ./unit_tests/unittest4.c dominion.o rngs.o assertions.o $(CFLAGS)
 
-unitTest5: dominion.o rngs.o ./unit_tests/unittest5.c assertions.o 
-	gcc -o unitTest5 -g ./unit_tests/unittest5.c dominion.o rngs.o assertions.o $(CFLAGS)
+unitTest5: dominion.o rngs.o ./unit_tests/unittest5.c assertions.o logMismatch.o
+	gcc -o unitTest5 -g ./unit_tests/unittest5.c dominion.o rngs.o assertions.o logMismatch.o $(CFLAGS)
 
-unitTest6: dominion.o rngs.o ./unit_tests/unittest6.c assertions.o 
-	gcc -o unitTest6 -g ./unit_tests/unittest6.c dominion.o rngs.o assertions.o $(CFLAGS)
+unitTest6: dominion.o rngs.o ./unit_tests/unittest6.c assertions.o logMismatch.o
+	gcc -o unitTest6 -g ./unit_tests/unittest6.c dominion.o rngs.o assertions.o logMismatch.o $(CFLAGS)
 
-unitTest7: dominion.o rngs.o ./unit_tests/unittest7.c assertions.o 
-	gcc -o unitTest7 -g ./unit_tests/unittest7.c dominion.o rngs.o assertions.o $(CFLAGS)
+unitTest7: dominion.o rngs.o ./unit_tests/unittest7.c assertions.o logMismatch.o
+	gcc -o unitTest7 -g ./unit_tests/unittest7.c dominion.o rngs.o assertions.o logMismatch.o $(CFLAGS)
 
-unitTest8: dominion.o rngs.o ./unit_tests/unittest8.c assertions.o 
-	gcc -o unitTest8 -g ./unit_tests/unittest8.c dominion.o rngs.o assertions.o $(CFLAGS)
+unitTest8: dominion.o rngs.o ./unit_tests/unittest8.c assertions.o logMismatch.o
+	gcc -o unitTest8 -g ./unit_tests/unittest8.c dominion.o rngs.o assertions.o logMismatch.o $(CFLAGS)
 
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)

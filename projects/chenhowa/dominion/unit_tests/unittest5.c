@@ -6,7 +6,7 @@
  *
  */
 
-
+#include "../logMismatch.h"
 #include "../dominion.h"
 #include "../dominion_helpers.h"
 #include <string.h>
@@ -53,20 +53,31 @@ int testSmithy() {
     /************  TEST 1: return value is correct *****/
     description = "Test 1: Return value is 0";
     return_value = smithyEffect(&postState, player, 1); 
-
-    didAllPass = assertTrue(return_value == 0, description) && didAllPass;
+    condition = return_value == 0;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("return", 0, return_value); 
+    }
 
     /***********   TEST 2: player received 3 extra card in hand ****/
     //Assumes drawCard works correctly
     description = "Test 2: Player received 3 extra cards";
-    didAllPass = assertTrue(numHand + 3 == postState.handCount[player],
+    condition = numHand + 3 == postState.handCount[player];
+    didAllPass = assertTrue(condition ,
                     description) && didAllPass;
+    if(!condition) {
+        logMisMatch("cards", numHand + 3, postState.handCount[player]); 
+    }
 
     /**********    TEST 3: The 3 extra cards came from the player's own deck ****/
     //Assumes drawCard works correctly
     description = "Test 3: The 3 cards came from the player's deck";
-    didAllPass = assertTrue(numDeck - 3 == postState.deckCount[player], 
+    condition = numDeck - 3 == postState.deckCount[player];
+    didAllPass = assertTrue(condition , 
             description) && didAllPass;
+    if(!condition) {
+        logMisMatch("cards", numDeck - 3, postState.deckCount[player]); 
+    }
 
     /*********     TEST 4: The 3 extra cards in hand are the correct cards ****/
     description = "Test 4: The 3 cards in hand are the correct cards";
