@@ -38,6 +38,8 @@ int testNumHandCards() {
     description_1 = "numHandCards returns the correct number of cards";
     description_2 = "numHandCards does not change the game state";
 
+
+    printf("\nTESTING numHandCards\n");
     /**************TEST 1: return value ****************************/
     for(cards = 0; cards <= maxHandCards; cards++) {
         printf("Testing a hand of %i cards\n", cards);
@@ -77,7 +79,7 @@ int main(int argc, char *argv[])
     } else {
         printf("numHandCards(): WARNING - At least one test failed");
     }
-    printf("\n");
+    printf("\n\n");
 
     return 0;
 }

@@ -16,7 +16,6 @@
 #include <stdlib.h>
 
 
-//Contains all tests for numHandCards()
 int testSmithy() {
     //Declaration of testing-specific variables
     char *description;
@@ -51,6 +50,7 @@ int testSmithy() {
     numDeck = postState.deckCount[player];
     numHand = postState.handCount[player];
 
+    printf("\nTESTING smithy\n");
     /************  TEST 1: return value is correct *****/
     description = "Test 1: Return value is 0";
     return_value = smithyEffect(&postState, player, 1); 
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
     } else {
         printf("smithEffect(): WARNING: At least one test failed");
     }
-    printf("\n");
+    printf("\n\n");
 
     return 0;
 }

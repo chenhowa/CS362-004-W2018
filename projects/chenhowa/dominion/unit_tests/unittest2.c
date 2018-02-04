@@ -39,6 +39,7 @@ int testWhoseTurn() {
     description_1 = "whoseTurn returns the correct player";
     description_2 = "whoseTurn does not change the game state";
 
+    printf("\nTESTING whoseTurn\n");
     /**************TEST 1: return value ****************************/
     for(player = 0; player <= maxPlayer; player++) {
         printf("Testing player %i\n", player);
@@ -77,7 +78,7 @@ int main(int argc, char *argv[])
     } else {
         printf("whoseTurn(): WARNING: At least one test failed!");
     }
-    printf("\n");
+    printf("\n\n");
 
     return 0;
 }

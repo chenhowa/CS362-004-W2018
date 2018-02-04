@@ -43,6 +43,7 @@ int testDiscardCard() {
     initializeGame(numPlayers, kingdomCards, seed, &postState);
     memcpy(&idealState, &postState, sizeof(struct gameState));
 
+    printf("\nTESTING discardCard\n");
     /************* Test 1: trash, large hand, discard NOT last card *****/
     memcpy(&postState, &idealState, sizeof(struct gameState));
     // Set the player up with a hand of 5 cards;
@@ -369,7 +370,7 @@ int main(int argc, char *argv[])
     } else {
         printf("discardCard(): WARNING: At least one test failed!");
     }
-    printf("\n");
+    printf("\n\n");
 
     return 0;
 }

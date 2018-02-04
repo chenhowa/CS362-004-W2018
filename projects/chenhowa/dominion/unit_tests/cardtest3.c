@@ -58,8 +58,9 @@ int testCouncilRoom() {
         } 
     }
 
-    printf("TEST councilRoomEffect\n");
+    printf("\nTESTING councilRoomEffect\n");
 
+    /***** TEST 1 ***/
     memcpy(&preState, &postState, sizeof(struct gameState));
     description = "Test 1: Return value is correct";
     return_value = councilRoomEffect(&postState, player, 0);
@@ -173,7 +174,7 @@ int main(int argc, char *argv[])
     } else {
         printf("councilRoomEffect(): WARNING: At least one test failed");
     }
-    printf("\n");
+    printf("\n\n");
 
     return 0;
 }

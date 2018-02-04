@@ -41,6 +41,8 @@ int testAdventurer() {
     memcpy(&initialState, &postState, sizeof(struct gameState));
     player = postState.whoseTurn;
 
+    printf("\nTESTING adventurerEffect\n");
+
     /********** TEST 1: When top two cards in deck are Treasures copper and silver ********/
     // Set up game
     postState.deckCount[player] = 5; //To avoid tons of code, just use a deck of 5.
@@ -264,7 +266,7 @@ int main(int argc, char *argv[])
     } else {
         printf("adventurerEffect(): WARNING: At least one test failed");
     }
-    printf("\n");
+    printf("\n\n");
 
     return 0;
 }

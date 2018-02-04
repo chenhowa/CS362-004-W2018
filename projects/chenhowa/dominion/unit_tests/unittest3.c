@@ -15,7 +15,6 @@
 #include <stdlib.h>
 
 
-//Contains all tests for numHandCards()
 int testIsGameOver() {
     //Declaration of testing-specific variables
     char *description;
@@ -39,6 +38,7 @@ int testIsGameOver() {
 
 
 
+    printf("\nTESTING isGameOver\n");
     /**********  TEST 1: Game is not over if neither victory condition is satisfied */
     // First set all supplies to be 4, except province and treasure_map 
     for(i = 0; i < treasure_map + 1; i++) {
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
     } else {
         printf("isGameOver(): WARNING: At least one test failed!");
     }
-    printf("\n");
+    printf("\n\n");
 
     return 0;
 }

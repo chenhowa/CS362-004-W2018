@@ -47,7 +47,7 @@ int testMinion() {
     memcpy(&initialState, &postState, sizeof(struct gameState));
     player = postState.whoseTurn;
 
-    printf("TEST minionEffect\n");
+    printf("\nTESTING minionEffect\n");
     /*********** TEST 1: choice 1 *****************/
     //initial set-up.
     choice1 = 1;
@@ -314,7 +314,7 @@ int main(int argc, char *argv[])
     } else {
         printf("minionEffect(): WARNING: At least one test failed");
     }
-    printf("\n");
+    printf("\n\n");
 
     return 0;
 }

@@ -68,7 +68,7 @@ noisytests: unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2 cardTest
 	./cardTest2 >> unittestresults.out
 	./cardTest3 >> unittestresults.out
 	./cardTest4 >> unittestresults.out
-	gcov dominion.c >> unittestresults.out
+	gcov -b dominion.c >> unittestresults.out
 	cat dominion.c.gcov >> unittestresults.out
 
 quiettests: unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2 cardTest3 cardTest4
@@ -80,7 +80,7 @@ quiettests: unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2 cardTest
 	./cardTest2 | grep -E -i "success|warning" >> unittestresults.out
 	./cardTest3 | grep -E -i "success|warning" >> unittestresults.out
 	./cardTest4 | grep -E -i "success|warning" >> unittestresults.out
-	gcov dominion.c >> unittestresults.out
+	gcov -b dominion.c >> unittestresults.out
 	cat dominion.c.gcov >> unittestresults.out
 
 
