@@ -9,6 +9,7 @@
  */
 
 
+#include "../logMismatch.h"
 #include "../dominion.h"
 #include "../dominion_helpers.h"
 #include <string.h>
@@ -62,11 +63,18 @@ int testCouncilRoom() {
     memcpy(&preState, &postState, sizeof(struct gameState));
     description = "Test 1: Return value is correct";
     return_value = councilRoomEffect(&postState, player, 0);
-    didAllPass = assertTrue(return_value == 0, description) && didAllPass;
+    condition = return_value == 0;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("return", 0, return_value); 
+    }
 
     description = "Test 2: Player received 4 new cards in hand";
-    didAllPass = assertTrue(postState.handCount[player] == preState.handCount[player] + 4
-                    , description) && didAllPass;
+    condition = postState.handCount[player] == preState.handCount[player] + 4;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("count", preState.handCount[player] + 4, postState.handCount[player]); 
+    }
 
     description = "Test 3: Those 4 new cards are all adventurer";
     condition = postState.hand[player][postState.handCount[player] - 1] == adventurer &&
@@ -74,13 +82,27 @@ int testCouncilRoom() {
                 postState.hand[player][postState.handCount[player] - 3] == adventurer &&
                 postState.hand[player][postState.handCount[player] - 4] == adventurer; 
     didAllPass = assertTrue(condition, description) && didAllPass;
+    if(!condition) {
+        logMisMatch("top card", adventurer, postState.hand[player][postState.handCount[player] - 1]); 
+        logMisMatch("second card", adventurer, postState.hand[player][postState.handCount[player] - 2]); 
+        logMisMatch("third card", adventurer, postState.hand[player][postState.handCount[player] - 3]); 
+        logMisMatch("fourth card", adventurer, postState.hand[player][postState.handCount[player] - 4]); 
+    }
 
     description = "Test 4: Player's deckCount is 4 less";
-    didAllPass = assertTrue(postState.deckCount[player] == preState.deckCount[player] - 4,                      description) && didAllPass;
+    condition = postState.deckCount[player] == preState.deckCount[player] - 4;
+    didAllPass = assertTrue(condition , description) && didAllPass;
+    if(!condition) {
+        logMisMatch("count", preState.deckCount[player] - 4, postState.deckCount[player]); 
+    }
 
     description = "Test 5: Player's buy count has increased by 1";
-    didAllPass = assertTrue(postState.numBuys == preState.numBuys + 1, description)
+    condition = postState.numBuys == preState.numBuys + 1;
+    didAllPass = assertTrue(condition , description)
                 && didAllPass;
+    if(!condition) {
+        logMisMatch("buys", preState.numBuys + 1, postState.numBuys);    
+    }
 
     description = "Test 6: All the other players increased their hand count by 1";
     condition = TRUE;
