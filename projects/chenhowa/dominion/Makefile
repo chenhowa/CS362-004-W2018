@@ -59,7 +59,7 @@ runtests: testDrawCard
 	gcov dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
-unittestresults.out: unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2 cardTest3 cardTest4
+unittestresults.out: unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2 cardTest3 cardTest4 dominion.o
 	./unitTest1 > unittestresults.out
 	./unitTest2 >> unittestresults.out
 	./unitTest3 >> unittestresults.out
@@ -71,7 +71,7 @@ unittestresults.out: unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2
 	gcov -b dominion.c >> unittestresults.out
 	cat dominion.c.gcov >> unittestresults.out
 
-quiettests: unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2 cardTest3 cardTest4
+quiettests: unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2 cardTest3 cardTest4 dominion.o
 	./unitTest1 | grep -E -i "success|warning" > unittestresults.out
 	./unitTest2 | grep -E -i "success|warning" >> unittestresults.out
 	./unitTest3 | grep -E -i "success|warning" >> unittestresults.out
