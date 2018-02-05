@@ -13,13 +13,14 @@
 
 
 int assertTrue(int condition, char* test_description) {
-    fprintf(stdout, "%s", test_description);
     if(condition == TRUE) {
-        fprintf(stdout,  "...PASSED\n");
+        fprintf(stdout,  "PASSED...");
+        fprintf(stdout, "%s\n", test_description);
         return TRUE;
     }
     else {
-        fprintf(stdout, "...FAILED\n");
+        fprintf(stdout, "FAILED...");
+        fprintf(stdout, "%s\n", test_description);
         return FALSE;
     }
 }
