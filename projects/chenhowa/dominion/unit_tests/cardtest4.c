@@ -50,11 +50,12 @@ int testMinion() {
     printf("\nTESTING minionEffect\n");
     /*********** TEST 1: choice 1 *****************/
     //initial set-up.
+    printf("**************Test 1: Choice 1\n");
     choice1 = 1;
     choice2 = 0;
     memcpy(&preState, &postState, sizeof(struct gameState));
 
-    description = "Test 1: return value is correct";
+    description = "return value is correct";
     return_value = minionEffect(&postState, player, 0, choice1, choice2);
     condition = return_value == 0;
     didAllPass = assertTrue(condition, description) && didAllPass;
@@ -62,21 +63,21 @@ int testMinion() {
         logMisMatch("return", 0, return_value); 
     }
 
-    description = "Test 1: player has gained 2 coins";
+    description = "player has gained 2 coins";
     condition = postState.coins == preState.coins + 2;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(!condition) {
         logMisMatch("coins", preState.coins + 2, postState.coins); 
     }
 
-    description = "Test 1: player has gained an action";
+    description = "player has gained an action";
     condition = postState.numActions == preState.numActions + 1;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(!condition) {
         logMisMatch("action", preState.numActions + 1, postState.numActions); 
     }
 
-    description = "Test 1: Nothing else has changed";
+    description = "Nothing else has changed";
     preState.coins += 2;
     preState.numActions += 1;
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
@@ -88,6 +89,7 @@ int testMinion() {
 
     /********** TEST 2: choice 2, 2 other players have > 4 cards, 1 has <= 4 cards */
     //Set up test.
+    printf("**************Test 2: Choice 2. 4 players. Of 3 non-turn players, 2 have > 4 cards, 1 has <= 4 cards\n");
     postState.whoseTurn = postState.numPlayers - 1;
     player = postState.whoseTurn;
     choice1 = 0;
@@ -128,7 +130,7 @@ int testMinion() {
     //Save preState.
     memcpy(&preState, &postState, sizeof(struct gameState));
 
-    description = "Test 2: Return value is correct";
+    description = "Return value is correct";
     return_value = minionEffect(&postState, player, 0, choice1, choice2);
     condition = return_value == 0;
     didAllPass = assertTrue(condition, description) && didAllPass;
@@ -136,35 +138,35 @@ int testMinion() {
         logMisMatch("return", 0, return_value); 
     }
 
-    description = "Test 2: player's handCount is now 4";
+    description = "player's handCount is now 4";
     condition = postState.handCount[player] == 4;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(!condition) {
         logMisMatch("count", 4, postState.handCount[player]); 
     }
 
-    description = "Test 2: player's hand is now full of smithy";
+    description = "player's hand is now full of smithy";
     condition = TRUE;
     for(i = 0; i < postState.handCount[player]; i++) {
         condition = (postState.hand[player][i] == smithy) && condition; 
     }
     didAllPass = assertTrue(condition, description) && didAllPass;
 
-    description = "Test 2: Player's deck is now 4 less";
+    description = " Player's deck is now 4 less";
     condition = postState.deckCount[player] == preState.deckCount[player] - 4;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(!condition) {
         logMisMatch("count", preState.deckCount[player] - 4, postState.deckCount[player]); 
     }
 
-    description = "Test 2: Player's discard is now 3 more";
+    description = " Player's discard is now 3 more";
     condition = postState.discardCount[player] == preState.discardCount[player] + 3;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(!condition) {
         logMisMatch("count", preState.discardCount[player] + 3, postState.discardCount[player]); 
     }
 
-    description = "Test 2: Player's top of discard consists of adventurer, minion, adventurer";
+    description = " Player's top of discard consists of adventurer, minion, adventurer";
     condition = postState.discard[player][postState.discardCount[player] - 1] == adventurer &&
             postState.discard[player][postState.discardCount[player] - 2] == minion &&
             postState.discard[player][postState.discardCount[player] - 3] == adventurer; 
@@ -175,14 +177,14 @@ int testMinion() {
         logMisMatch("bottom card", adventurer, postState.discard[player][postState.discardCount[player] - 3]); 
     }
     
-    description = "Test 2: player has gained an action";
+    description = " player has gained an action";
     condition = postState.numActions == preState.numActions + 1;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(!condition) {
         logMisMatch("actions", preState.numActions + 1, postState.numActions); 
     }
 
-    description = "Test 3: Other with 5 cards in hand has handCount of 4";
+    description = " Other with 5 cards in hand has handCount of 4";
     player = 2;
     condition = postState.handCount[player] == 4;
     didAllPass = assertTrue(condition, description) && didAllPass;
@@ -190,28 +192,28 @@ int testMinion() {
         logMisMatch("count", 4, postState.handCount[player]); 
     }
 
-    description = "Test 3: Other with 5 cards has hand full of smithy";
+    description = " Other with 5 cards has hand full of smithy";
     condition = TRUE;
     for(i = 0; i < postState.handCount[player]; i++) {
         condition = (postState.hand[player][i] == smithy) && condition; 
     }
     didAllPass = assertTrue(condition, description) && didAllPass;
 
-    description = "Test 3: Other with 5 cards has deck with 4 less";
+    description = " Other with 5 cards has deck with 4 less";
     condition = postState.deckCount[player] == preState.deckCount[player] - 4;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(!condition) {
         logMisMatch("count", preState.deckCount[player] - 4, postState.deckCount[player]); 
     }
 
-    description = "Test 3: Other with 5 cards has discard with 5 more";
+    description = " Other with 5 cards has discard with 5 more";
     condition = postState.discardCount[player] == preState.discardCount[player] + 5;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(!condition) {
         logMisMatch("count", preState.discardCount[player] + 5, postState.discardCount[player]); 
     }
 
-    description = "Test 3: Other with 5 cards has discard pile gained 5 adventurers";
+    description = " Other with 5 cards has discard pile gained 5 adventurers";
     count = postState.discardCount[player];
     condition = TRUE;
     for(i = count - 5; i < count; i++) {
@@ -219,7 +221,7 @@ int testMinion() {
     }
     didAllPass = assertTrue(condition, description) && didAllPass;
 
-    description = "Test 4: Other with 6 cards in hand has handCount of 4";
+    description = " Other with 6 cards in hand has handCount of 4";
     player = 0;
     condition = postState.handCount[player] == 4;
     didAllPass = assertTrue(condition, description) && didAllPass;
@@ -227,28 +229,28 @@ int testMinion() {
         logMisMatch("count", 4, postState.handCount[player]); 
     }
 
-    description = "Test 4: Other with 6 cards has hand full of smithy";
+    description = " Other with 6 cards has hand full of smithy";
     condition = TRUE;
     for(i = 0; i < postState.handCount[player]; i++) {
         condition = (postState.hand[player][i] == smithy) && condition; 
     }
     didAllPass = assertTrue(condition, description) && didAllPass;
 
-    description = "Test 4: Other with 6 cards has deck with 4 less";
+    description = " Other with 6 cards has deck with 4 less";
     condition = postState.deckCount[player] == preState.deckCount[player] - 4;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(!condition) {
         logMisMatch("count", preState.deckCount[player] - 4, postState.deckCount[player]); 
     }
 
-    description = "Test 4: Other with 6 cards has discard with 6 more";
+    description = " Other with 6 cards has discard with 6 more";
     condition = postState.discardCount[player] == preState.discardCount[player] + 6;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(!condition) {
         logMisMatch("count", preState.discardCount[player] + 6, postState.discardCount[player]); 
     }
 
-    description = "Test 4: Other with 6 cards has discard pile gained 6 adventurers";
+    description = " Other with 6 cards has discard pile gained 6 adventurers";
     count = postState.discardCount[player];
     condition = TRUE;
     for(i = count - 6; i < count; i++) {
@@ -257,7 +259,7 @@ int testMinion() {
     didAllPass = assertTrue(condition, description) && didAllPass;
 
     /* FINAL CHECK */
-    description = "Test 5: No other changes occurred: other with 4 cards in hand experienced no effects";
+    description = " No other changes occurred: other with 4 cards in hand experienced no effects";
     player = postState.numPlayers - 1; //Restore changes to original player
     preState.handCount[player] = 4;
     for(i = 0; i < preState.handCount[player]; i++) {

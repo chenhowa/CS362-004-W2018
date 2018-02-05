@@ -45,6 +45,7 @@ int testDiscardCard() {
 
     printf("\nTESTING discardCard\n");
     /************* Test 1: trash, large hand, discard NOT last card *****/
+    printf("****************Test 1: Trash, large hand, discard first card\n");
     memcpy(&postState, &idealState, sizeof(struct gameState));
     // Set the player up with a hand of 5 cards;
     player = postState.whoseTurn;
@@ -66,21 +67,21 @@ int testDiscardCard() {
 
     //Verify return value
     return_value = discardCard(handPos, player, &postState, trashFlag);
-    description = "Test 1: Return value is correct";
+    description = "Return value is correct";
     condition = return_value == 0;
     didAllPass = assertTrue(condition , description) && didAllPass;
     if(! condition) {
         printf("\texpected return = %i, got %i\n", 0, return_value); 
     }
 
-    description = "Test 1: lastCard is now in position of discarded card";
+    description = "lastCard is now in position of discarded card";
     condition = postState.hand[player][0] == lastCard;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
         printf("\texpected card = %i, got %i\n", lastCard, postState.hand[player][0]); 
     }
 
-    description = "Test 1: player has one fewer card in hand";
+    description = "player has one fewer card in hand";
     condition = postState.handCount[player] == preState.handCount[player] - 1;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
@@ -91,11 +92,12 @@ int testDiscardCard() {
     preState.hand[player][handPos] = lastCard;
     preState.handCount[player]--;
 
-    description = "Test 1: No undesired changes were made to the game";
+    description = "No undesired changes were made to the game";
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
     didAllPass = assertTrue(mem_cmp_return == 0, description);
 
     /************ TEST 2: trash, 1 card, discard 1 card ******/
+    printf("****************Test 2: Trash, 1 card, discard first card\n");
     memcpy(&postState, &idealState, sizeof(struct gameState));
 
     //Set the player with a hand of just 1 card.
@@ -115,14 +117,14 @@ int testDiscardCard() {
 
     //Verify return value
     return_value = discardCard(handPos, player, &postState, trashFlag);
-    description = "Test 2: Return value is correct";
+    description = "Return value is correct";
     condition = return_value == 0;
     didAllPass = assertTrue(condition , description) && didAllPass;
     if(! condition) {
         printf("\texpected return = %i, got %i\n", 0, return_value); 
     }
 
-    description = "Test 2: Player's hand is now empty";
+    description = "Player's hand is now empty";
     condition = postState.handCount[player] == 0;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
@@ -132,11 +134,12 @@ int testDiscardCard() {
     //Take a card away from preState.
     preState.handCount[player]--;
 
-    description = "Test 2: No undesired changes were made to the game";
+    description = "No undesired changes were made to the game";
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
     didAllPass = assertTrue(mem_cmp_return == 0, description);
 
     /************ TEST 3: trash, large hand, discard last card */
+    printf("****************Test 3: Trash, large hand, discard last card\n");
     memcpy(&postState, &idealState, sizeof(struct gameState));
 
     postState.handCount[player] = 5;
@@ -156,14 +159,14 @@ int testDiscardCard() {
 
     //Verify return value
     return_value = discardCard(handPos, player, &postState, trashFlag);
-    description = "Test 3: Return value is correct";
+    description = "Return value is correct";
     condition = return_value == 0;
     didAllPass = assertTrue(condition , description) && didAllPass;
     if(! condition) {
         printf("\texpected return = 0, got %i\n", return_value); 
     }
 
-    description = "Test 3: Player's hand is now one less";
+    description = "Player's hand is now one less";
     condition = postState.handCount[player] == preState.handCount[player] - 1;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
@@ -172,12 +175,13 @@ int testDiscardCard() {
 
     //Take last hand card away from preState.
     preState.handCount[player]--;
-    description = "Test 3: No undesired changes were made to the game";
+    description = "No undesired changes were made to the game";
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
     didAllPass = assertTrue(mem_cmp_return == 0, description);
 
 
     /************* Test 4: no trash, large hand, discard NOT last card *****/
+    printf("****************Test 4: Don't trash, large hand, discard first card\n");
     memcpy(&postState, &idealState, sizeof(struct gameState));
     // Set the player up with a hand of 5 cards;
     player = postState.whoseTurn;
@@ -198,35 +202,35 @@ int testDiscardCard() {
 
     //Verify return value
     return_value = discardCard(handPos, player, &postState, trashFlag);
-    description = "Test 4: Return value is correct";
+    description = "Return value is correct";
     condition = return_value == 0;
     didAllPass = assertTrue(condition , description) && didAllPass;
     if(! condition) {
         printf("\texpected return = 0, got %i", return_value); 
     }
 
-    description = "Test 4: handCount has decreased by 1";
+    description = "handCount has decreased by 1";
     condition = postState.handCount[player] == preState.handCount[player] - 1;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
         printf("\texpected count = %i, got %i", preState.handCount[player] - 1, postState.handCount[player]); 
     }
 
-    description = "Test 4: lastCard has replaced discarded card";
+    description = "lastCard has replaced discarded card";
     condition = postState.hand[player][handPos] == lastCard;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
         printf("\texpected card = %i, got %i\n", lastCard, postState.hand[player][handPos]); 
     }
 
-    description = "Test 4: played card count has increased by 1";
+    description = "played card count has increased by 1";
     condition = postState.playedCardCount == preState.playedCardCount + 1;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
         printf("\texpected count = %i, got %i\n", preState.playedCardCount + 1, postState.playedCardCount); 
     }
 
-    description = "Test 4: playedCards deck now has discarded card on top";
+    description = "playedCards deck now has discarded card on top";
     condition = postState.playedCards[postState.playedCardCount - 1] == discardedCard;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
@@ -241,11 +245,12 @@ int testDiscardCard() {
     preState.playedCards[preState.playedCardCount] = discardedCard;
     preState.playedCardCount++;
 
-    description = "Test 4: No undesired changes were made to the game";
+    description = "No undesired changes were made to the game";
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
     didAllPass = assertTrue(mem_cmp_return == 0, description);
 
     /************ TEST 5: no trash, 1 card, discard 1 card ******/
+    printf("****************Test 5: Don't trash, 1 card, discard first card\n");
     memcpy(&postState, &idealState, sizeof(struct gameState));
 
     //Set the player with a hand of just 1 card.
@@ -265,24 +270,24 @@ int testDiscardCard() {
 
     //Verify return value
     return_value = discardCard(handPos, player, &postState, trashFlag);
-    description = "Test 5: Return value is correct";
+    description = "Return value is correct";
     didAllPass = assertTrue(return_value == 0, description) && didAllPass;
 
-    description = "Test 5: handCount has decreased by 1";
+    description = "handCount has decreased by 1";
     condition = postState.handCount[player] == preState.handCount[player] - 1;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
         printf("\texpected count = %i, got %i", preState.handCount[player] - 1, postState.handCount[player]); 
     }
 
-    description = "Test 5: played card count has increased by 1";
+    description = "played card count has increased by 1";
     condition = postState.playedCardCount == preState.playedCardCount + 1;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
         printf("\texpected count = %i, got %i\n", preState.playedCardCount + 1, postState.playedCardCount); 
     }
 
-    description = "Test 5: playedCards deck now has discarded card on top";
+    description = "playedCards deck now has discarded card on top";
     condition = postState.playedCards[postState.playedCardCount - 1] == discardedCard;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
@@ -296,11 +301,12 @@ int testDiscardCard() {
     preState.playedCards[preState.playedCardCount] = discardedCard;
     preState.playedCardCount++;
 
-    description = "Test 5: No undesired changes were made to the game";
+    description = "No undesired changes were made to the game";
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
     didAllPass = assertTrue(mem_cmp_return == 0, description);
 
     /************ TEST 6: NO trash, large hand, discard last card */
+    printf("****************Test 6: Don't trash, large hand, discard last card\n");
     memcpy(&postState, &idealState, sizeof(struct gameState));
 
     postState.handCount[player] = 5;
@@ -319,24 +325,24 @@ int testDiscardCard() {
 
     //Verify return value
     return_value = discardCard(handPos, player, &postState, trashFlag);
-    description = "Test 6: Return value is correct";
+    description = "Return value is correct";
     didAllPass = assertTrue(return_value == 0, description) && didAllPass;
 
-    description = "Test 6: handCount has decreased by 1";
+    description = "handCount has decreased by 1";
     condition = postState.handCount[player] == preState.handCount[player] - 1;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
         printf("\texpected count = %i, got %i", preState.handCount[player] - 1, postState.handCount[player]); 
     }
 
-    description = "Test 6: played card count has increased by 1";
+    description = "played card count has increased by 1";
     condition = postState.playedCardCount == preState.playedCardCount + 1;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
         printf("\texpected count = %i, got %i\n", preState.playedCardCount + 1, postState.playedCardCount); 
     }
 
-    description = "Test 6: playedCards deck now has discarded card on top";
+    description = "playedCards deck now has discarded card on top";
     condition = postState.playedCards[postState.playedCardCount - 1] == discardedCard;
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(! condition) {
@@ -350,7 +356,7 @@ int testDiscardCard() {
     preState.playedCards[preState.playedCardCount] = discardedCard;
     preState.playedCardCount++;
 
-    description = "Test 6: No undesired changes were made to the game";
+    description = "No undesired changes were made to the game";
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
     didAllPass = assertTrue(mem_cmp_return == 0, description);
 

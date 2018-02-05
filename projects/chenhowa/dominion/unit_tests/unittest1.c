@@ -42,7 +42,7 @@ int testNumHandCards() {
     printf("\nTESTING numHandCards\n");
     /**************TEST 1: return value ****************************/
     for(cards = 0; cards <= maxHandCards; cards++) {
-        printf("Testing a hand of %i cards\n", cards);
+        printf("************Testing a hand of %i cards\n", cards);
         // Update hand count
         postState.handCount[ postState.whoseTurn ] = cards;
 

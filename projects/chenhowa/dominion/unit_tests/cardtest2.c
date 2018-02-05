@@ -45,6 +45,7 @@ int testAdventurer() {
 
     /********** TEST 1: When top two cards in deck are Treasures copper and silver ********/
     // Set up game
+    printf("****************Test 1: Top two cards in deck are copper and silver\n");
     postState.deckCount[player] = 5; //To avoid tons of code, just use a deck of 5.
     for(i = 0; i < postState.deckCount[player]; i++) {
         postState.deck[player][i] = adventurer; 
@@ -55,7 +56,7 @@ int testAdventurer() {
     //Save this state for later comparison.
     memcpy(&preState, &postState, sizeof(struct gameState));
 
-    description = "Test 1: return value is correct";
+    description = "return value is correct";
     return_value = adventurerEffect(&postState, player);
     condition = return_value == 0;
     didAllPass = assertTrue(condition , description) && didAllPass;
@@ -63,7 +64,7 @@ int testAdventurer() {
         logMisMatch("return", 0, return_value);
     }
 
-    description = "Test 1: player's deck has two fewer cards";
+    description = "player's deck has two fewer cards";
     condition = postState.deckCount[player] == preState.deckCount[player] - 2;
     didAllPass = assertTrue(condition ,
                     description) && didAllPass;
@@ -71,7 +72,7 @@ int testAdventurer() {
         logMisMatch("count", preState.deckCount[player] - 2, postState.deckCount[player]); 
     }
 
-    description = "Test 1: player's hand has two more cards";
+    description = "player's hand has two more cards";
     condition = postState.handCount[player] == preState.handCount[player] + 2;
     didAllPass = assertTrue(condition , 
                     description) && didAllPass;
@@ -79,7 +80,7 @@ int testAdventurer() {
         logMisMatch("count", preState.handCount[player] + 2, postState.handCount[player]); 
     }
 
-    description = "Test 1: Those two new cards are the copper and silver";
+    description = "Those two new cards are the copper and silver";
     condition = postState.hand[player][postState.handCount[player] - 1] == silver &&
                 postState.hand[player][postState.handCount[player] - 2] == copper;
     didAllPass = assertTrue(condition, description) && didAllPass;
@@ -88,7 +89,7 @@ int testAdventurer() {
         logMisMatch("bottom card", copper, postState.hand[player][postState.handCount[player] - 2]); 
     }
 
-    description = "Test 1: No other changes were made";
+    description = "No other changes were made";
     preState.deckCount[player] -= 2;
     preState.handCount[player] += 2;
     preState.hand[player][preState.handCount[player] - 1] = silver;
@@ -101,6 +102,7 @@ int testAdventurer() {
 
     /*************** TEST 2: Bottom two cards are treasures silver and gold,
      *                  The top 3 are all adventurers ***/
+    printf("****************Test 2: bottom two cards in deck are gold and silver\n");
     postState.deckCount[player] = 5;
     postState.deck[player][0] = silver;
     postState.deck[player][1] = gold;
@@ -111,7 +113,7 @@ int testAdventurer() {
     //Save state for later comparison.
     memcpy(&preState, &postState, sizeof(struct gameState));
 
-    description = "Test 2: Return value is correct";
+    description = "Return value is correct";
     return_value = adventurerEffect(&postState, player);
     condition = return_value == 0;
     didAllPass = assertTrue(condition , description) && didAllPass;
@@ -119,7 +121,7 @@ int testAdventurer() {
         logMisMatch("return", 0, return_value); 
     }
 
-    description = "Test 2: player's hand has two more cards";
+    description = "player's hand has two more cards";
     condition = postState.handCount[player] == preState.handCount[player] + 2;
     didAllPass = assertTrue(condition , 
                     description) && didAllPass;
@@ -127,7 +129,7 @@ int testAdventurer() {
         logMisMatch("cards", preState.handCount[player] + 2, postState.handCount[player]); 
     }
 
-    description = "Test 2: Those two new cards are the gold and silver";
+    description = "Those two new cards are the gold and silver";
     condition = postState.hand[player][postState.handCount[player] - 1] == silver &&
                 postState.hand[player][postState.handCount[player] - 2] == gold;
     didAllPass = assertTrue(condition, description) && didAllPass;
@@ -136,21 +138,21 @@ int testAdventurer() {
         logMisMatch("bottom card", gold, postState.hand[player][postState.handCount[player] - 2]); 
     }
 
-    description = "Test 2: player's deck now has no cards at all";
+    description = "player's deck now has no cards at all";
     condition = postState.deckCount[player] == 0;
     didAllPass = assertTrue(condition , description) && didAllPass;
     if(!condition) {
         logMisMatch("count", 0, postState.deckCount[player]); 
     }
 
-    description = "Test 2: discardCount has 3 more cards";
+    description = "discardCount has 3 more cards";
     condition = postState.discardCount[player] == preState.discardCount[player] + 3;
     didAllPass = assertTrue(condition , description) && didAllPass;
     if(!condition) {
         logMisMatch("count", preState.discardCount[player] + 3, postState.discardCount[player]); 
     }
     
-    description = "Test 2: the three discarded cards are all adventurers";
+    description = "the three discarded cards are all adventurers";
     condition = postState.discard[player][postState.discardCount[player] - 1] == adventurer &&
         postState.discard[player][postState.discardCount[player] - 2] == adventurer &&
         postState.discard[player][postState.discardCount[player] - 3] == adventurer;
@@ -161,7 +163,7 @@ int testAdventurer() {
         logMisMatch("bottom card", adventurer, postState.discard[player][postState.discardCount[player] - 3]); 
     }
 
-    description = "Test 2: No other changes were made";
+    description = "No other changes were made";
     preState.deckCount[player] = 0;
     preState.handCount[player] += 2;
     preState.hand[player][preState.handCount[player] - 1] = silver;
@@ -177,6 +179,7 @@ int testAdventurer() {
     memcpy(&postState, &initialState, sizeof(struct gameState));
 
     /***************** Test 3: 1 card (gold) in deck **********/
+    printf("****************Test 3: only 1 Treasure (gold) in deck\n");
     postState.deckCount[player] = 5;
     for(i = 0; i < postState.deckCount[player]; i++) {
         postState.deck[player][i] = adventurer; 
@@ -184,7 +187,7 @@ int testAdventurer() {
     postState.deck[player][postState.deckCount[player] - 1] = gold;
     memcpy(&preState, &postState, sizeof(struct gameState));
 
-    description = "Test 3: Return value is correct, proving no infinite loop possible";
+    description = "Return value is correct, proving no infinite loop possible";
     return_value = adventurerEffect(&postState, player);
     condition = return_value == 0;
     didAllPass = assertTrue(condition , description) && didAllPass;
@@ -192,14 +195,14 @@ int testAdventurer() {
         logMisMatch("return", 0, return_value); 
     }
 
-    description = "Test 3: Player's handCount has increased by 1";
+    description = "Player's handCount has increased by 1";
     condition = postState.handCount[player] == preState.handCount[player] + 1;
     didAllPass = assertTrue(condition , description) && didAllPass;
     if(!condition) {
         logMisMatch("count", preState.handCount[player] + 1, postState.handCount[player]); 
     }
 
-    description = "Test 3: The new card is the gold";
+    description = "The new card is the gold";
     condition = postState.hand[player][postState.handCount[player] - 1] == gold;
     didAllPass = assertTrue(condition , description) && didAllPass;
     if(!condition) {
@@ -213,6 +216,7 @@ int testAdventurer() {
     memcpy(&postState, &initialState, sizeof(struct gameState));
 
     /*************** Test 4: 1 card (copper) in deck, 1 card (gold) in discard pile **/
+    printf("****************Test 4: 1 copper in deck, 1 gold in discard\n");
     postState.deckCount[player] = 5;
     for(i = 0; i < postState.deckCount[player]; i++) {
         postState.deck[player][i] = adventurer; 
@@ -222,7 +226,7 @@ int testAdventurer() {
     postState.discard[player][0] = gold;
     memcpy(&preState, &postState, sizeof(struct gameState));
 
-    description = "Test 4: Return value is correct, proving no infinite loop possible";
+    description = "Return value is correct, proving no infinite loop possible";
     return_value = adventurerEffect(&postState, player);
     condition = return_value == 0;
     didAllPass = assertTrue(condition , description) && didAllPass;
@@ -230,14 +234,14 @@ int testAdventurer() {
         logMisMatch("return", 0, return_value); 
     }
 
-    description = "Test 4: Player's handCount has increased by 2";
+    description = "Player's handCount has increased by 2";
     condition = postState.handCount[player] == preState.handCount[player] + 2;
     didAllPass = assertTrue(condition , description) && didAllPass;
     if(!condition) {
         logMisMatch("count", preState.handCount[player] + 2, postState.handCount[player]); 
     }
 
-    description = "Test 4: The new cards are the gold and copper";
+    description = "The new cards are the gold and copper";
     condition = postState.hand[player][postState.handCount[player] - 1] == gold &&
                 postState.hand[player][postState.handCount[player] - 2] == copper;
     didAllPass = assertTrue(condition, description) && didAllPass;

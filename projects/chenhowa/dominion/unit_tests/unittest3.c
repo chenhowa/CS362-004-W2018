@@ -41,6 +41,7 @@ int testIsGameOver() {
     printf("\nTESTING isGameOver\n");
     /**********  TEST 1: Game is not over if neither victory condition is satisfied */
     // First set all supplies to be 4, except province and treasure_map 
+    printf("*************Test 1: Neither condition is satisfied\n");
     for(i = 0; i < treasure_map + 1; i++) {
         postState.supplyCount[i] = enoughCards; 
     }
@@ -54,7 +55,7 @@ int testIsGameOver() {
     memcpy(&preState, &postState, sizeof(struct gameState));
 
     // Check that the game is not over
-    description = "Test 1: Game is not over when conditions are not satisfied";
+    description = "Game is not over when conditions are not satisfied";
     condition = gameOver != isGameOver(&postState);
     didAllPass = assertTrue(condition, description) && didAllPass;
     if(!condition) {
@@ -62,12 +63,13 @@ int testIsGameOver() {
     }
 
     // Check that the game state was not changed
-    description = "Test 1: Game state was not changed";
+    description = "Game state was not changed";
     mem_cmp_return = memcmp(&preState, &postState, sizeof(struct gameState));
     didAllPass = assertTrue(mem_cmp_return == 0, description) && didAllPass;
 
     /*********   TEST 2: Game is over if only province pile is empty  */
     // Restore game state and adjust it.
+    printf("*************Test 2: Province pile is empty\n");
     memcpy(&postState, &idealState, sizeof(struct gameState));
     postState.supplyCount[province] = 0;
 
@@ -89,6 +91,7 @@ int testIsGameOver() {
 
     /**********  TEST 3: Games is over if only 3 supply piles are empty */
     // Restore game state and adjust it.
+    printf("*************Test 3: Supply piles are empty\n");
     memcpy(&postState, &idealState, sizeof(struct gameState));
     postState.supplyCount[curse] = 0;
     postState.supplyCount[treasure_map] = 0;
@@ -112,6 +115,7 @@ int testIsGameOver() {
 
     /***********  TEST 4: Game is over if 3 piles are empty AND province is empty */
     // Restore game state and adjust it.
+    printf("*************Test 4: 3 piles are empty AND province pile is empty\n");
     memcpy(&postState, &idealState, sizeof(struct gameState));
     postState.supplyCount[province] = 0;
     postState.supplyCount[curse] = 0;

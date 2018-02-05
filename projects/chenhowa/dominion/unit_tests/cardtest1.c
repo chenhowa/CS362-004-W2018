@@ -52,7 +52,7 @@ int testSmithy() {
 
     printf("\nTESTING smithy\n");
     /************  TEST 1: return value is correct *****/
-    description = "Test 1: Return value is 0";
+    description = "Return value is 0";
     return_value = smithyEffect(&postState, player, 1); 
     condition = return_value == 0;
     didAllPass = assertTrue(condition , description) && didAllPass;
@@ -62,7 +62,7 @@ int testSmithy() {
 
     /***********   TEST 2: player received 3 extra card in hand ****/
     //Assumes drawCard works correctly
-    description = "Test 2: Player received 3 extra cards";
+    description = "Player received 3 extra cards";
     condition = numHand + 3 == postState.handCount[player];
     didAllPass = assertTrue(condition ,
                     description) && didAllPass;
@@ -72,7 +72,7 @@ int testSmithy() {
 
     /**********    TEST 3: The 3 extra cards came from the player's own deck ****/
     //Assumes drawCard works correctly
-    description = "Test 3: The 3 cards came from the player's deck";
+    description = "The 3 cards came from the player's deck";
     condition = numDeck - 3 == postState.deckCount[player];
     didAllPass = assertTrue(condition , 
             description) && didAllPass;
@@ -81,7 +81,7 @@ int testSmithy() {
     }
 
     /*********     TEST 4: The 3 extra cards in hand are the correct cards ****/
-    description = "Test 4: The 3 cards in hand are the correct cards";
+    description = "The 3 cards in hand are the correct cards";
     cardsCorrect = postState.hand[player][postState.handCount[player] - 1] == adventurer &&
                     postState.hand[player][postState.handCount[player] - 2] == adventurer &&
                     postState.hand[player][postState.handCount[player] - 3] == adventurer;
@@ -93,7 +93,7 @@ int testSmithy() {
     }
 
     /*********    Test 5: No other changes were made to the game state ****/
-    description = "Test 5: No other changes were made to the game state";
+    description = "No other changes were made to the game state";
     preState.deckCount[player] -= 3;  //decrease cards in deck
     preState.handCount[player] += 3;  // increase cards in hand
     preState.hand[player][preState.handCount[player] - 1] = adventurer;

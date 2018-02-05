@@ -42,7 +42,7 @@ int testWhoseTurn() {
     printf("\nTESTING whoseTurn\n");
     /**************TEST 1: return value ****************************/
     for(player = 0; player <= maxPlayer; player++) {
-        printf("Testing player %i\n", player);
+        printf("***********Testing player %i\n", player);
         // Update hand count
         postState.whoseTurn = player;
 
