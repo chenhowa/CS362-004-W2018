@@ -60,25 +60,41 @@ runtests: testDrawCard
 	cat dominion.c.gcov >> unittestresult.out
 
 unittestresults.out: unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2 cardTest3 cardTest4 dominion.o
-	./unitTest1 > unittestresults.out
+	echo "unittest1.c: " > unittestresults.out
+	./unitTest1 >> unittestresults.out
+	echo "unittest2.c: " >> unittestresults.out
 	./unitTest2 >> unittestresults.out
+	echo "unittest3.c: " >> unittestresults.out
 	./unitTest3 >> unittestresults.out
+	echo "unittest4.c: " >> unittestresults.out
 	./unitTest4 >> unittestresults.out
+	echo "cardtest1.c: " >> unittestresults.out
 	./cardTest1 >> unittestresults.out
+	echo "cardtest2.c: " >> unittestresults.out
 	./cardTest2 >> unittestresults.out
+	echo "cardtest3.c: " >> unittestresults.out
 	./cardTest3 >> unittestresults.out
+	echo "cardtest4.c: " >> unittestresults.out
 	./cardTest4 >> unittestresults.out
 	gcov -b dominion.c >> unittestresults.out
 	cat dominion.c.gcov >> unittestresults.out
 
 quiettests: unitTest1 unitTest2 unitTest3 unitTest4 cardTest1 cardTest2 cardTest3 cardTest4 dominion.o
-	./unitTest1 | grep -E -i "success|warning" > unittestresults.out
+	echo "unittest1.c: " > unittestresults.out
+	./unitTest1 | grep -E -i "success|warning" >> unittestresults.out
+	echo "unittest2.c: " >> unittestresults.out
 	./unitTest2 | grep -E -i "success|warning" >> unittestresults.out
+	echo "unittest3.c: " >> unittestresults.out
 	./unitTest3 | grep -E -i "success|warning" >> unittestresults.out
+	echo "unittest4.c: " >> unittestresults.out
 	./unitTest4 | grep -E -i "success|warning" >> unittestresults.out
+	echo "cardtest1.c: " >> unittestresults.out
 	./cardTest1 | grep -E -i "success|warning" >> unittestresults.out
+	echo "cardtest2.c: " >> unittestresults.out
 	./cardTest2 | grep -E -i "success|warning" >> unittestresults.out
+	echo "cardtest3.c: " >> unittestresults.out
 	./cardTest3 | grep -E -i "success|warning" >> unittestresults.out
+	echo "cardtest4.c: " >> unittestresults.out
 	./cardTest4 | grep -E -i "success|warning" >> unittestresults.out
 	gcov -b dominion.c >> unittestresults.out
 	cat dominion.c.gcov >> unittestresults.out
