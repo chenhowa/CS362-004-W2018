@@ -217,6 +217,7 @@ int main() {
         G.discardCount[p] = floor(Random() * (MAX_DECK - 5 - G.deckCount[p])); // ensure no overflow
         G.handCount[p] = floor(Random() * MAX_HAND - 5); //ensure no oveflow
 
+        //Add valid cards to discard and deck
         for(i = 0; i < G.deckCount[p]; i++) {
             G.deck[p][i] = floor(Random() * treasure_map); 
         }
