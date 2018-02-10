@@ -6,6 +6,9 @@ rngs.o: rngs.h rngs.c
 dominion.o: dominion.h dominion.c rngs.o
 	gcc -c dominion.c -g  $(CFLAGS)
 
+assertions.o: assertions.h assertions.c
+	gcc -c assertions.c -g $(CFLAGS)
+
 playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c -g dominion.o rngs.o $(CFLAGS)
 #To run playdom you need to entere: ./playdom <any integer number> like ./playdom 10*/
@@ -29,14 +32,14 @@ runtests: testDrawCard
 	gcov dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
-randomTest1: randomtest1.c dominion.o rngs.o
-	gcc -o randomTest1 -g randomtest1.c dominion.o rngs.o
+randomTest1: tests_random/randomtest1.c dominion.o rngs.o assertions.o
+	gcc -o randomTest1 -g tests_random/randomtest1.c dominion.o rngs.o assertions.o $(CFLAGS)
 
-randomTest2: randomtest2.c dominion.o rngs.o
-	gcc -o randomTest2 -g randomtest2.c dominion.o rngs.o
+randomTest2: tests_random/randomtest2.c dominion.o rngs.o assertions.o
+	gcc -o randomTest2 -g tests_random/randomtest2.c dominion.o rngs.o assertions.o $(CFLAGS)
 
-randomTest3: randomtest3.c dominion.o rngs.o
-	gcc -o randomTest3 -g randomtest3.c dominion.o rngs.o
+randomTest3: tests_random/randomtest3.c dominion.o rngs.o assertions.o
+	gcc -o randomTest3 -g tests_random/randomtest3.c dominion.o rngs.o assertions.o $(CFLAGS)
 
 randomtestcard1.out: dominion.o randomTest1
 	./randomTest1 > randomtestcard1.out
