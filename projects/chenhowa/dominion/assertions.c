@@ -10,6 +10,7 @@ int assertEq(int expected, int actual, char* label, char* description) {
                 description, label, expected, actual); 
         return FALSE;
     }
+    printf("\tPASS %s\n", description);
     return TRUE;
 
 }
