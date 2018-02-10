@@ -215,7 +215,7 @@ int main() {
         p = floor(Random() * 2);
         G.deckCount[p] = floor(Random() * MAX_DECK);
         G.discardCount[p] = floor(Random() * (MAX_DECK - 5 - G.deckCount[p])); // ensure no overflow
-        G.handCount[p] = floor(Random() * MAX_HAND - 5); //ensure no oveflow
+        G.handCount[p] = floor(Random() * (MAX_HAND - 5)); //ensure no oveflow
 
         //Add valid cards to discard and deck
         for(i = 0; i < G.deckCount[p]; i++) {
@@ -224,6 +224,8 @@ int main() {
         for(i = 0; i < G.discardCount[p]; i++) {
             G.discard[p][i] = floor(Random() * treasure_map); 
         }
+        //Make the played card count reasonable.
+        G.playedCardCount = floor(Random() * (MAX_DECK - 5));
 
         checkAdventurerEffect(&G, p, n);
     }
