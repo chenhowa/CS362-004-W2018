@@ -1241,6 +1241,9 @@ int adventurerEffect (struct gameState *state, int currentPlayer) {
     int shuffleLoops = 0;
     while(drawntreasure<2){
         if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
+            if(shuffleLoops == 1) {
+                return -1; 
+            }
             shuffleLoops++;
             shuffle(currentPlayer, state);
         }
@@ -1254,9 +1257,6 @@ int adventurerEffect (struct gameState *state, int currentPlayer) {
             z++;
         }
 
-        if(shuffleLoops > 2) {
-            return -1; 
-        }
 
     }
     while(z-1>=0){

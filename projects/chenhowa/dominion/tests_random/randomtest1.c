@@ -138,15 +138,22 @@ int checkAdventurerEffect(struct gameState* post, int player, int iteration) {
         
         //Unclear what state of discard, deck, and their counts will be
         // So just copy post's values. 
+/*
+        printf("Starting final test\n");
+        fflush(stdout);
         pre.discardCount[player] = post->discardCount[player];
-        memcpy(&pre, post->discard[player], sizeof(int) * pre.discardCount[player]);
+        memcpy(pre.discard[player], post->discard[player], sizeof(int) * pre.discardCount[player]);
+        printf("Copying last memory\n");
+        fflush(stdout);
         pre.deckCount[player] = post->deckCount[player];
-        memcpy(&pre, post->deck[player], sizeof(int) * pre.deckCount[player]);
+        memcpy(pre.deck[player], post->deck[player], sizeof(int) * pre.deckCount[player]);
+*/
 
         //Check taht no other changes were made when calling FUT
         description = "No other changes were made";
         ret = memcmp(&pre, post, sizeof(struct gameState));
         assertEq(0, ret, "memcmp return", description);
+        fflush(stdout);
     
     
     } else if (treasureDeckCount == 1) {
@@ -169,9 +176,9 @@ int checkAdventurerEffect(struct gameState* post, int player, int iteration) {
         //Since at least one shuffle had to be done, state of deck, discard, and their 
         // counts is unclear. Just copy from post
         pre.discardCount[player] = post->discardCount[player];
-        memcpy(&pre, post->discard[player], sizeof(int) * pre.discardCount[player]);
+        memcpy(pre.discard[player], post->discard[player], sizeof(int) * pre.discardCount[player]);
         pre.deckCount[player] = post->deckCount[player];
-        memcpy(&pre, post->deck[player], sizeof(int) * pre.deckCount[player]);
+        memcpy(pre.deck[player], post->deck[player], sizeof(int) * pre.deckCount[player]);
 
         // Check no other changes were made
         description = "No other changes were made";
@@ -190,7 +197,7 @@ int checkAdventurerEffect(struct gameState* post, int player, int iteration) {
 
 
 int main() {
-
+    int numTests = 2000;
     // Most of this code is taken from testDrawCard.c.
     // It sets up the random tests as demonstrated in the video lecture
     int i, n, p;
@@ -199,7 +206,7 @@ int main() {
     printf ("RANDOM TESTS.\n");
     SelectStream(2);
     PutSeed(3);
-    for (n = 0; n < 2000; n++) {
+    for (n = 0; n < numTests; n++) {
         printf("iteration %i: ", n);
         fflush(stdout);
         for (i = 0; i < sizeof(struct gameState); i++) {
@@ -210,9 +217,13 @@ int main() {
         G.discardCount[p] = floor(Random() * (MAX_DECK - 5 - G.deckCount[p])); // ensure no overflow
         G.handCount[p] = floor(Random() * MAX_HAND - 5); //ensure no oveflow
 
-        //Here starts my own code
-        printf(" start\n");
-        fflush(stdout);
+        for(i = 0; i < G.deckCount[p]; i++) {
+            G.deck[p][i] = floor(Random() * treasure_map); 
+        }
+        for(i = 0; i < G.discardCount[p]; i++) {
+            G.discard[p][i] = floor(Random() * treasure_map); 
+        }
+
         checkAdventurerEffect(&G, p, n);
     }
 
