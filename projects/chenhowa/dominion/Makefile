@@ -42,17 +42,17 @@ randomTest3: tests_random/randomtestcard3.c dominion.o rngs.o assertions.o
 	gcc -o randomTest3 -g tests_random/randomtestcard3.c dominion.o rngs.o assertions.o $(CFLAGS)
 
 randomtestcard1.out: dominion.o randomTest1
-	./randomTest1 > randomtestcard1.out
+	./randomTest1 | grep -i -E 'FAIL|iteration' > randomtestcard1.out
 	gcov -b dominion.c >> randomtestcard1.out
 	cat dominion.c.gcov >> randomtestcard1.out
 
 randomtestcard2.out: dominion.o randomTest2
-	./randomTest2 > randomtestcard2.out
+	./randomTest2 | grep -i -E 'FAIL|iteration' > randomtestcard2.out
 	gcov -b dominion.c >> randomtestcard2.out
 	cat dominion.c.gcov >> randomtestcard2.out
 
 randomtestcard3.out: dominion.o randomTest3
-	./randomTest3 > randomtestcard3.out
+	./randomTest3 | grep -i -E 'FAIL|iteration' > randomtestcard3.out
 	gcov -b dominion.c >> randomtestcard3.out
 	cat dominion.c.gcov >> randomtestcard3.out
 
