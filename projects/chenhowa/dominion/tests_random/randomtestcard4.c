@@ -22,12 +22,13 @@ int cardIsTreasure(int card) {
     return FALSE;
 }
 
-int checkCouncilRoomEffect(struct gameState* post, int player, int iteration) {
+int checkMinionEffect(struct gameState* post, int player, int iteration, int handPos, int choice1, int choice2) {
 
     struct gameState pre;
     int ret;
     char* description;
     int otherPlayer = (player + 1) % 2;
+    int expected, actual;
 
     //Save the state for later comparison
     memcpy(&pre, post, sizeof(struct gameState));
@@ -36,13 +37,71 @@ int checkCouncilRoomEffect(struct gameState* post, int player, int iteration) {
     description = "Return was correct"; 
     printf("Starting minionEffect\n");
     fflush(stdout);
-    ret = minionEffect(post, player, 0);
+    ret = minionEffect(post, player, handPos, choice1, choice2);
     printf("Ending minionEffect\n");
     fflush(stdout);
     assertEq(0, ret, "return", description);
 
+    // Regardless of choice, the number of actions should increase by 1.
+    description = "Number of actions increased by 1";
+    assertEq(pre.numActions + 1, post->numActions, "numActions", description);
+    pre.numActions += 1; // corresponding change.
+
+    if(choice1) {
+        //The only state change is that the player gains 2 coins. 
+        description = "Number of coins increased by 2";
+        assertEq(pre.coins + 2, post->numCoins, "numCoins", description);
+        pre.coins += 2;
+    } else if (choice2) {
+        // Depending on how many cards are in the deck vs the discard, shuffle may or 
+        // may not be called. To avoid checking this too thoroughly for any of the players,
+        // I will simply check that the player's hand now has 4 cards, and those 4 cards
+        // came from the combination of the player's deck and discard
+
+        description = "Player now has 4 cards in hand";
+        assertEq(4, post->handCount[player], "handCount", description);
+
+        description = "Player's post_discard + post_deck = pre_discard + pre_deck + pre_hand - 4";
+        expected = pre.discardCard[player] + pre.deckCount[player] +
+                    pre.handCount[player] - 4;
+        actual = post->discardCount[player] + post->deckCount[player];
+        assertEq(expected, actual, "total", description);
+        
+        // Make corresponding changes
+        pre.handCount[player] = 4;
+        memcpy(pre.hand[player], post->hand[player], MAX_HAND);
+        pre.deckCount[player] = post->deckCount[player];
+        memcpy(pre.deck[player], post->deck[player], sizeof(int) * MAX_DECK)
+        pre.discardCount[player] = post->discardCount[player]
+        memcpy(pre.discard[player], post->discard[player], sizeof(int) * MAX_DISCARD);
+        
+        if(pre.handCount[otherPlayer] > 4) {
+            description = "otherPlayer now has 4 cards in hand";
+            assertEq(4, post->handCount[otherPlayer], "handCount", description);
+
+            description = "otherPlayer's post_discard + post_deck = pre_discard + pre_deck + pre_hand - 4";
+            expected = pre.discardCard[otherPlayer] + pre.deckCount[otherPlayer] +
+                        pre.handCount[otherPlayer] - 4;
+            actual = post->discardCount[otherPlayer] + post->deckCount[otherPlayer];
+            assertEq(expected, actual, "total", description);
 
 
+            //Make corresponding changes
+            pre.handCount[otherPlayer] = 4;
+            memcpy(pre.hand[otherPlayer], post->hand[otherPlayer], MAX_HAND);
+            pre.deckCount[otherPlayer] = post->deckCount[otherPlayer];
+            memcpy(pre.deck[otherPlayer], post->deck[otherPlayer], sizeof(int) * MAX_DECK)
+            pre.discardCount[otherPlayer] = post->discardCount[otherPlayer]
+            memcpy(pre.discard[otherPlayer], post->discard[otherPlayer], sizeof(int) * MAX_DISCARD);
+        }
+        // Otherwise other player does nothing.
+    }
+
+
+    //regardless of either choice, check that no other changes were made.
+    description = "No other changes have occurred";
+    ret = memcmp(&pre, post, sizeof(struct gameState));
+    assertEq(0, ret, "memcmp return", description);
 
     fflush(stdout);
 
@@ -61,6 +120,8 @@ int main() {
     // It sets up the random tests as demonstrated in the video lecture
     int i, n, p;
     int otherPlayer;
+    int handPos;
+    int choice1, choice2;
     struct gameState G;
     printf ("Testing minionEffect.\n");
     printf ("RANDOM TESTS.\n");
@@ -78,6 +139,9 @@ int main() {
         G.discardCount[p] = floor(Random() * (MAX_DECK - 5 - G.deckCount[p])); // ensure no overflow
         G.handCount[p] = floor(Random() * (MAX_HAND - 5)); //ensure no oveflow
 
+        G.numActions = floor(Random() * 500);
+        G.coins = floor(Random() * 500);
+
         //Add valid cards to discard and deck
         for(i = 0; i < G.deckCount[p]; i++) {
             G.deck[p][i] = floor(Random() * treasure_map); 
@@ -89,8 +153,13 @@ int main() {
         //Make the played card count reasonable.
         G.playedCardCount = floor(Random() * (MAX_DECK - 5));
 
+        // Choose a handPos for discarding for the player.
+        handPos = floor(Random() * G.handCount[player]);
 
-        //REPEAT FOR THE SECOND PLAYER
+        //Choose a choice for the player. Recall that it is a binary choice.
+        // between choice1 and choice 2
+        choice1 = floor(Random() * 2); // 0 or 1?
+        choice2 = (choice1 + 1) % 2; // Be whatever choice1 is not.  REPEAT FOR THE SECOND PLAYER
         otherPlayer = (p + 1) % 2;
         otherPlayer = floor(Random() * 2);
         G.deckCount[otherPlayer] = floor(Random() * (MAX_DECK));
@@ -106,7 +175,7 @@ int main() {
 
 
 
-        checkCouncilRoomEffect(&G, p, n);
+        checkMinionEffect(&G, p, n, handPos, choice1, choice2);
     }
 
     printf ("ALL TESTS OK\n");

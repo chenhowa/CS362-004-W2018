@@ -868,6 +868,8 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
             return 0;
 
         case minion:
+            //discard minion card from hand
+            discardCard(handPos, currentPlayer, state, 0);
             return minionEffect(state, currentPlayer, handPos, choice1, choice2);
 
         case steward:
@@ -1311,9 +1313,6 @@ int minionEffect (struct gameState *state, int currentPlayer, int handPos, int c
     int j;
     //+1 action
     state->numActions++;
-
-    //discard card from hand
-    discardCard(handPos, currentPlayer, state, 0);
 
     if (choice1)		//+2 coins
     {
