@@ -1322,7 +1322,7 @@ int minionEffect (struct gameState *state, int currentPlayer, int handPos, int c
     else if (choice2)		//discard hand, redraw 4, other players with 5+ cards discard hand and draw 4
     {
         //discard hand
-        while(numHandCards(state) > -1)
+        while(numHandCards(state) > 0)
         {
             discardCard(handPos, currentPlayer, state, 0);
         }

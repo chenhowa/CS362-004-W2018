@@ -12,5 +12,4 @@ int assertEq(int expected, int actual, char* label, char* description) {
     }
     printf("\tPASS %s\n", description);
     return TRUE;
-
 }

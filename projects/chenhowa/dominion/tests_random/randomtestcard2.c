@@ -1,6 +1,8 @@
 
+
+
 /* Howard Chen
- * Fuzzy tester for dominion.c: smithyEffect()
+ * Fuzzy tester for dominion.c: minionEffect()
  *
  *
  */
@@ -20,75 +22,101 @@ int cardIsTreasure(int card) {
     return FALSE;
 }
 
-int checkSmithyEffect(struct gameState* post, int player, int iteration) {
+int checkMinionEffect(struct gameState* post, int player, int iteration, int handPos, int choice1, int choice2) {
 
     struct gameState pre;
     int ret;
     char* description;
-
-    //printf("\niteration %i", iteration);
+    int otherPlayer = (player + 1) % 2;
+    int expected, actual;
+    int passing = TRUE;
 
     //Save the state for later comparison
     memcpy(&pre, post, sizeof(struct gameState));
 
-    //Based on the pre game state, make the necessary changes
-    // according to the understanding of how smithyEffect works
-    if(pre.deckCount[player] >= 3) {
-        printf("Case 1\n");
-        pre.handCount[player] += 3;
-        pre.hand[player][pre.handCount[player] - 1] = pre.deck[player][pre.deckCount[player] - 3];
-        pre.hand[player][pre.handCount[player] - 2] = pre.deck[player][pre.deckCount[player] - 2];
-        pre.hand[player][pre.handCount[player] - 3] = pre.deck[player][pre.deckCount[player] - 1];
-        pre.deckCount[player] -= 3;
-
-        //Other than this, no other changes should have been made to the game.
-        description = "No other changes were made to the game";
-        ret = memcmp(&pre, post, sizeof(struct gameState));
-        assertEq(0, ret, "memcmp return", description);
-    
-    } else if (pre.deckCount[player] + pre.discardCount[player] >= 3) {
-        //If the deck is mostly empty because much of it is in the
-        // discard, we cannot be sure which cards will end up in smithy's hand. 
-        // So we have to trust drawCard here.
-        printf("Case 2\n");
-        pre.handCount[player] += 3;
-        pre.hand[player][pre.handCount[player] - 1] = post->hand[player][post->handCount[player] - 1];
-        pre.hand[player][pre.handCount[player] - 2] = post->hand[player][post->handCount[player] - 2];
-        pre.hand[player][pre.handCount[player] - 3] = post->hand[player][post->handCount[player] - 3];
-        pre.deckCount[player] = pre.deckCount[player] + pre.discardCount[player] - 3;
-        memcpy(pre.deck[player], post->deck[player], pre.deckCount[player] + 3);
-        pre.discardCount[player] = post->discardCount[player];
-        memcpy(pre.deck[player], post->deck[player], pre.discardCount[player]);
-
-        description = "No other changes were made to game";
-        ret= memcmp(&pre, post, sizeof(struct gameState));
-        assertEq(0, ret, "memcmp return", description);
-    
-    } else {
-        // Otherwise the deck and discard started with with very, very few cards,
-        // which would never occur in a real game of dominion.
-        // This is not an important case.
-        //
-        printf("Case 3: Very few cards in deck and discard. Not important\n");
+    if(choice1) {
+        printf(" Case 1\n"); 
     }
+    if(choice2) {
+        printf("Case 2\n"); 
+    }
+
     //Check return value was correct (should always return 0)
     description = "Return was correct"; 
-    printf("Starting smithyEffect\n");
+    printf("Starting minionEffect\n");
     fflush(stdout);
-    ret = smithyEffect(post, player, 0);
-    printf("Ending smithyEffect\n");
+    ret = minionEffect(post, player, handPos, choice1, choice2);
+    printf("Ending minionEffect\n");
     fflush(stdout);
-    assertEq(0, ret, "return", description);
+    passing = passing * assertEq(0, ret, "return", description);
+
+    // Regardless of choice, the number of actions should increase by 1.
+    description = "Number of actions increased by 1";
+    passing = passing * assertEq(pre.numActions + 1, post->numActions, "numActions", description);
+    pre.numActions += 1; // corresponding change.
+
+    if(choice1) {
+        //The only state change is that the player gains 2 coins. 
+        description = "Number of coins increased by 2";
+        passing = passing * assertEq(pre.coins + 2, post->coins, "numCoins", description);
+        pre.coins += 2;
+    } else if (choice2) {
+        // Depending on how many cards are in the deck vs the discard, shuffle may or 
+        // may not be called. To avoid checking this too thoroughly for any of the players,
+        // I will simply check that the player's hand now has 4 cards, and those 4 cards
+        // came from the combination of the player's deck and discard
+
+        description = "Player now has 4 cards in hand";
+        passing = passing * assertEq(4, post->handCount[player], "handCount", description);
+
+        description = "Player's post_discard + post_deck = pre_discard + pre_deck + pre_hand - 4";
+        expected = pre.discardCount[player] + pre.deckCount[player] +
+                    pre.handCount[player] - 4;
+        actual = post->discardCount[player] + post->deckCount[player];
+        passing = passing * assertEq(expected, actual, "total", description);
+        
+        // Make corresponding changes
+        pre.handCount[player] = 4;
+        memcpy(pre.hand[player], post->hand[player], MAX_HAND);
+        pre.deckCount[player] = post->deckCount[player];
+        memcpy(pre.deck[player], post->deck[player], sizeof(int) * MAX_DECK);
+        pre.discardCount[player] = post->discardCount[player];
+        memcpy(pre.discard[player], post->discard[player], sizeof(int) * MAX_DECK);
+        
+        if(pre.handCount[otherPlayer] > 4) {
+            description = "otherPlayer now has 4 cards in hand";
+            passing = passing * assertEq(4, post->handCount[otherPlayer], "handCount", description);
+
+            description = "otherPlayer's post_discard + post_deck = pre_discard + pre_deck + pre_hand - 4";
+            expected = pre.discardCount[otherPlayer] + pre.deckCount[otherPlayer] +
+                        pre.handCount[otherPlayer] - 4;
+            actual = post->discardCount[otherPlayer] + post->deckCount[otherPlayer];
+            passing = passing * assertEq(expected, actual, "total", description);
+
+
+            //Make corresponding changes
+            pre.handCount[otherPlayer] = 4;
+            memcpy(pre.hand[otherPlayer], post->hand[otherPlayer], MAX_HAND);
+            pre.deckCount[otherPlayer] = post->deckCount[otherPlayer];
+            memcpy(pre.deck[otherPlayer], post->deck[otherPlayer], sizeof(int) * MAX_DECK);
+            pre.discardCount[otherPlayer] = post->discardCount[otherPlayer];
+            memcpy(pre.discard[otherPlayer], post->discard[otherPlayer], sizeof(int) * MAX_DECK);
+        }
+        // Otherwise other player does nothing.
+    }
+
+
+    //regardless of either choice, check that no other changes were made.
+    description = "No other changes have occurred";
+    ret = memcmp(&pre, post, sizeof(struct gameState));
+    passing = passing * assertEq(0, ret, "memcmp return", description);
 
     fflush(stdout);
 
 
-    return 0;
+    return passing;
 
 }
-
-
-
 
 
 int main() {
@@ -96,8 +124,12 @@ int main() {
     // Most of this code is taken from testDrawCard.c.
     // It sets up the random tests as demonstrated in the video lecture
     int i, n, p;
+    int otherPlayer;
+    int handPos;
+    int choice1, choice2;
+    int passing = TRUE;
     struct gameState G;
-    printf ("Testing smithyEffect.\n");
+    printf ("Testing minionEffect.\n");
     printf ("RANDOM TESTS.\n");
     SelectStream(2);
     PutSeed(3);
@@ -108,9 +140,13 @@ int main() {
             ((char*)&G)[i] = floor(Random() * 256);
         }
         p = floor(Random() * 2);
-        G.deckCount[p] = floor(Random() * (MAX_DECK));
-        G.discardCount[p] = floor(Random() * (MAX_DECK - 5 - G.deckCount[p])); // ensure no overflow
-        G.handCount[p] = floor(Random() * (MAX_HAND - 5)); //ensure no oveflow
+        G.numPlayers = 2; //Set standard value of 2 to avoid any issues.
+        G.deckCount[p] = floor(Random() * 50 + 1);
+        G.discardCount[p] = floor(Random() * 50 + 1); // ensure no overflow
+        G.handCount[p] = floor(Random() * 50 + 1); //ensure no oveflow
+
+        G.numActions = floor(Random() * 500);
+        G.coins = floor(Random() * 500);
 
         //Add valid cards to discard and deck
         for(i = 0; i < G.deckCount[p]; i++) {
@@ -120,13 +156,37 @@ int main() {
             G.discard[p][i] = floor(Random() * treasure_map); 
         }
 
-        //Make the played card count reasonable.
-        G.playedCardCount = floor(Random() * (MAX_DECK - 5));
+        // Choose a handPos for discarding for the player.
+        handPos = floor(Random() * G.handCount[p]);
 
-        checkSmithyEffect(&G, p, n);
+        //Choose a choice for the player. Recall that it is a binary choice.
+        // between choice1 and choice 2
+        choice1 = floor(Random() * 2); // 0 or 1?
+        choice2 = (choice1 + 1) % 2; // Be whatever choice1 is not.  REPEAT FOR THE SECOND PLAYER
+        otherPlayer = (p + 1) % 2;
+        G.deckCount[otherPlayer] = floor(Random() * 50 + 1);
+        G.discardCount[otherPlayer] = floor(Random() * 50 + 1); 
+        G.handCount[otherPlayer] = floor(Random() * 50 + 1); 
+        for(i = 0; i < G.deckCount[otherPlayer]; i++) {
+            G.deck[otherPlayer][i] = floor(Random() * treasure_map); 
+        }
+        for(i = 0; i < G.discardCount[otherPlayer]; i++) {
+            G.discard[otherPlayer][i] = floor(Random() * treasure_map); 
+        }
+        G.playedCardCount = floor(Random() * 12 );
+        
+        G.whoseTurn = p;
+
+
+
+        passing = passing * checkMinionEffect(&G, p, n, handPos, choice1, choice2);
     }
 
-    printf ("ALL TESTS OK\n");
+    if(passing) {
+        printf("ANNOUNCEMENT: All tests passed!"); 
+    } else {
+        printf("ANNOUNCEMENT: At least one test failed!");
+    }
 
 
 

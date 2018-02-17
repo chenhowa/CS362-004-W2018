@@ -38,25 +38,25 @@ randomTest1: tests_random/randomtestcard1.c dominion.o rngs.o assertions.o
 randomTest2: tests_random/randomtestcard2.c dominion.o rngs.o assertions.o
 	gcc -o randomTest2 -g tests_random/randomtestcard2.c dominion.o rngs.o assertions.o $(CFLAGS)
 
-randomTest3: tests_random/randomtestcard3.c dominion.o rngs.o assertions.o
-	gcc -o randomTest3 -g tests_random/randomtestcard3.c dominion.o rngs.o assertions.o $(CFLAGS)
+randomAdventurerTest: tests_random/randomtestadventurer.c dominion.o rngs.o assertions.o
+	gcc -o randomTest3 -g tests_random/randomtestadventurer.c dominion.o rngs.o assertions.o $(CFLAGS)
 
 randomtestcard1.out: dominion.o randomTest1
-	./randomTest1 | grep -i -E 'FAIL|iteration' > randomtestcard1.out
+	./randomTest1 | grep -i -E 'FAIL|iteration|ANNOUNCEMENT' > randomtestcard1.out
 	gcov -b dominion.c >> randomtestcard1.out
 	cat dominion.c.gcov >> randomtestcard1.out
 
 randomtestcard2.out: dominion.o randomTest2
-	./randomTest2 | grep -i -E 'FAIL|iteration' > randomtestcard2.out
+	./randomTest2 | grep -i -E 'FAIL|iteration|ANNOUNCEMENT' > randomtestcard2.out
 	gcov -b dominion.c >> randomtestcard2.out
 	cat dominion.c.gcov >> randomtestcard2.out
 
-randomtestcard3.out: dominion.o randomTest3
-	./randomTest3 | grep -i -E 'FAIL|iteration' > randomtestcard3.out
-	gcov -b dominion.c >> randomtestcard3.out
-	cat dominion.c.gcov >> randomtestcard3.out
+randomtestadventurer.out: dominion.o randomTest3
+	./randomTest3 | grep -i -E 'FAIL|iteration|ANNOUNCEMENT' > randomtestadventurer.out
+	gcov -b dominion.c >> randomtestadventurer.out
+	cat dominion.c.gcov >> randomtestadventurer.out
 
-randomtests: randomtestcard1.out randomtestcard2.out randomtestcard3.out
+randomtests: randomtestcard1.out randomtestcard2.out randomtestadventurer.out
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
@@ -64,4 +64,4 @@ player: player.c interface.o
 all: playdom player testDrawCard testBuyCard badTestDrawCard
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe *.exe badTestDrawCard randomTest1 randomTest2 randomTest3
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe *.exe badTestDrawCard randomTest1 randomTest2 randomTest3 randomTest4 randomAdventurerTest
