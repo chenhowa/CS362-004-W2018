@@ -25,16 +25,51 @@ int checkSmithyEffect(struct gameState* post, int player, int iteration) {
     struct gameState pre;
     int ret;
     char* description;
-
-    //printf("\niteration %i", iteration);
+    int passing = TRUE;
 
     //Save the state for later comparison
     memcpy(&pre, post, sizeof(struct gameState));
 
+    if(pre.deckCount[player] >= 3) {
+        printf(" Case 1\n");
+    }
+    else if (pre.deckCount[player] + pre.discardCount[player] >= 3) {
+        printf(" Case 2\n");
+    } else {
+        printf(" Case 3: Very few cards in deck and discard. Not important\n");
+    }
+
+    //Check return value was correct (should always return 0)
+    description = "Return was correct"; 
+    printf("Starting smithyEffect\n");
+    fflush(stdout);
+    ret = smithyEffect(post, player);
+    printf("Ending smithyEffect\n");
+    fflush(stdout);
+    passing = passing * assertEq(0, ret, "return", description);
+
     //Based on the pre game state, make the necessary changes
     // according to the understanding of how smithyEffect works
     if(pre.deckCount[player] >= 3) {
-        printf("Case 1\n");
+        description = "Player's hand count increased by 3";
+        passing = passing * assertEq(pre.handCount[player] + 3, post->handCount[player], "handCount", description);
+        description = "Player's top hand card is correct";
+        passing = passing * assertEq(pre.deck[player][pre.deckCount[player] - 3], 
+                    post->hand[player][post->handCount[player] - 1],
+                    "card id", description);
+        description = "Player's second hand card is correct";
+        passing = passing * assertEq(pre.deck[player][pre.deckCount[player] - 2], 
+                    post->hand[player][post->handCount[player] - 2],
+                    "card id", description);
+        description = "Player's third hand card is correct";
+        passing = passing * assertEq(pre.deck[player][pre.deckCount[player] - 1], 
+                    post->hand[player][post->handCount[player] - 3],
+                    "card id", description);
+
+        description = "Player's deckCount decreased by 3";
+        passing = passing * assertEq(pre.deckCount[player] - 3, post->deckCount[player], "deckCount", description);
+
+        //Make corresponding changes.
         pre.handCount[player] += 3;
         pre.hand[player][pre.handCount[player] - 1] = pre.deck[player][pre.deckCount[player] - 3];
         pre.hand[player][pre.handCount[player] - 2] = pre.deck[player][pre.deckCount[player] - 2];
@@ -44,46 +79,43 @@ int checkSmithyEffect(struct gameState* post, int player, int iteration) {
         //Other than this, no other changes should have been made to the game.
         description = "No other changes were made to the game";
         ret = memcmp(&pre, post, sizeof(struct gameState));
-        assertEq(0, ret, "memcmp return", description);
+        passing = passing * assertEq(0, ret, "memcmp return", description);
     
     } else if (pre.deckCount[player] + pre.discardCount[player] >= 3) {
         //If the deck is mostly empty because much of it is in the
-        // discard, we cannot be sure which cards will end up in smithy's hand. 
+        // discard, we cannot be sure which cards will end up in smithy's hand,
+        // or what the final states of the deck and discard will be. 
         // So we have to trust drawCard here.
-        printf("Case 2\n");
+        description = "Player's hand count increased by 3";
+        passing = passing * assertEq(pre.handCount[player] + 3, post->handCount[player], "handCount", description);
+        description = "Shuffle occurred, so discard should now be empty";
+        passing = passing * assertEq(0, post->discardCount[player], "discardCount", description);
+
+        //make corresponding changes
         pre.handCount[player] += 3;
         pre.hand[player][pre.handCount[player] - 1] = post->hand[player][post->handCount[player] - 1];
         pre.hand[player][pre.handCount[player] - 2] = post->hand[player][post->handCount[player] - 2];
         pre.hand[player][pre.handCount[player] - 3] = post->hand[player][post->handCount[player] - 3];
         pre.deckCount[player] = pre.deckCount[player] + pre.discardCount[player] - 3;
-        memcpy(pre.deck[player], post->deck[player], pre.deckCount[player] + 3);
+        memcpy(pre.deck[player], post->deck[player], MAX_DECK);
         pre.discardCount[player] = post->discardCount[player];
-        memcpy(pre.deck[player], post->deck[player], pre.discardCount[player]);
+        memcpy(pre.discard[player], post->discard[player], MAX_DECK);
 
         description = "No other changes were made to game";
         ret= memcmp(&pre, post, sizeof(struct gameState));
-        assertEq(0, ret, "memcmp return", description);
+        passing = passing * assertEq(0, ret, "memcmp return", description);
     
     } else {
         // Otherwise the deck and discard started with with very, very few cards,
-        // which would never occur in a real game of dominion.
+        // which would not occur in a real game of dominion.
         // This is not an important case.
         //
-        printf("Case 3: Very few cards in deck and discard. Not important\n");
     }
-    //Check return value was correct (should always return 0)
-    description = "Return was correct"; 
-    printf("Starting smithyEffect\n");
-    fflush(stdout);
-    ret = smithyEffect(post, player, 0);
-    printf("Ending smithyEffect\n");
-    fflush(stdout);
-    assertEq(0, ret, "return", description);
 
     fflush(stdout);
 
 
-    return 0;
+    return passing;
 
 }
 
@@ -97,6 +129,7 @@ int main() {
     // It sets up the random tests as demonstrated in the video lecture
     int i, n, p;
     struct gameState G;
+    int passing = TRUE;
     printf ("Testing smithyEffect.\n");
     printf ("RANDOM TESTS.\n");
     SelectStream(2);
@@ -123,11 +156,14 @@ int main() {
         //Make the played card count reasonable.
         G.playedCardCount = floor(Random() * (MAX_DECK - 5));
 
-        checkSmithyEffect(&G, p, n);
+        passing = passing * checkSmithyEffect(&G, p, n);
     }
 
-    printf ("ALL TESTS OK\n");
-
+    if(passing) {
+        printf("ANNOUNCEMENT: All tests passed!"); 
+    } else {
+        printf("ANNOUNCEMENT: At least one test failed!");
+    }
 
 
     return 0;
