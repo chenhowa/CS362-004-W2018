@@ -28,8 +28,8 @@ int checkAdventurerEffect(struct gameState* post, int player, int iteration) {
     int treasureDiscardCount = 0;
     int i;
     int card;
-    int index_1;
-    int index_2;
+    int index_1 = -1;
+    int index_2 = -1;
     int tempHandSize;
     int expected, actual;
     int passing = TRUE;
