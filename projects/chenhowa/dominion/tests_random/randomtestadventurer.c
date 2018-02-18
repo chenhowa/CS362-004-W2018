@@ -55,7 +55,7 @@ int checkAdventurerEffect(struct gameState* post, int player, int iteration) {
         }
     }
 
-    if(treasureDiscardCount >= 2) {
+    if(treasureDeckCount >= 2) {
         printf("  Case 1\n");
     }
     else if ((treasureDeckCount + treasureDiscardCount) >= 2) {
@@ -85,7 +85,7 @@ int checkAdventurerEffect(struct gameState* post, int player, int iteration) {
 
 
     // If there are 2+ treasure in deck.
-    if(treasureDiscardCount >= 2) {
+    if(treasureDeckCount >= 2) {
         //Then handCount increased by 2.
         description = "player's hand increased by 2";
         passing = passing * assertEq(pre.handCount[player] + 2, post->handCount[player], "handCount", description);
@@ -296,8 +296,8 @@ int main() {
             ((char*)&G)[i] = floor(Random() * 256);
         }
         p = floor(Random() * 2);
-        G.deckCount[p] = floor(Random() * MAX_DECK);
-        G.discardCount[p] = floor(Random() * (MAX_DECK - 5 - G.deckCount[p])); // ensure no overflow
+        G.deckCount[p] = floor(Random() * 250);
+        G.discardCount[p] = floor(Random() * (250 - G.deckCount[p] + 1)); // ensure no overflow
         G.handCount[p] = floor(Random() * (MAX_HAND - 5)); //ensure no oveflow
 
         //Add valid cards to discard and deck
