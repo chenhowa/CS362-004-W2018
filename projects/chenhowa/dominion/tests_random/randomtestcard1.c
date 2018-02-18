@@ -26,6 +26,7 @@ int checkSmithyEffect(struct gameState* post, int player, int iteration) {
     int ret;
     char* description;
     int passing = TRUE;
+    int expected, actual;
 
     //Save the state for later comparison
     memcpy(&pre, post, sizeof(struct gameState));
@@ -90,6 +91,11 @@ int checkSmithyEffect(struct gameState* post, int player, int iteration) {
         passing = passing * assertEq(pre.handCount[player] + 3, post->handCount[player], "handCount", description);
         description = "Shuffle occurred, so discard should now be empty";
         passing = passing * assertEq(0, post->discardCount[player], "discardCount", description);
+
+        description = "postDiscard + postDeck = preDiscard + preDeck - 3";
+        expected = pre.discardCount[player] + pre.deckCount[player] - 3;
+        actual = post->discardCount[player] + post->deckCount[player];
+        assertEq(expected, actual, "discard + deck", description);
 
         //make corresponding changes
         pre.handCount[player] += 3;
