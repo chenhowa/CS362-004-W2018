@@ -103,7 +103,7 @@ protected void setUp() {
          boolean result = urlVal.isValid(url);
          if(result == true)
         	 System.out.println(url);
-         assertEquals(url, expected, result);
+         assertEquals(url, expected, result);g
          if (printStatus) {
             if (printIndex) {
                System.out.print(testPartsIndextoString());
