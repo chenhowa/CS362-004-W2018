@@ -1,0 +1,232 @@
+
+Title: isGameOver() does not always detect the Game is over when
+        3 supply piles are empty
+
+Class: Serious Bug
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
+
+
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
+
+Is it reproducible: Yes 
+
+Description
+===========
+In my tests of dominion.c, I have a test that sets the supply counts
+for the curse, treasure_map, and council_room to 0. Since 3 supply piles
+are empty, isGameOver() should return TRUE. But it does not.
+
+
+Steps to Produce/Reproduce
+--------------------------
+1. Obtain a valid gameState by calling initializeGame() with valid parameters.
+2. Set the counts to 0 for curse, treasure_map, and council_room;
+        e.g. state.supplyCount[province] = 0;
+3. Call isGameOver() and examine the return value. It will be 0 (FALSE).
+
+
+Expected Results
+----------------
+isGameOver() should return 1 (TRUE)
+
+Actual Results
+--------------
+isGameOver() returns 0 (FALSE)
+
+
+
+
+
+Title: discardCard() makes unexpected changes to the game state.
+
+Class:
+    Potentially Serious Bug
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
+
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
+
+Is it reproducible: Yes 
+
+Description
+===========
+I have called discardCard under various conditions: with or without the trash
+flag set, with a large hand, with a small hand, discarding the first card, or
+discarding the last card. In each case, discardCard does almost everything correctly,
+but makes some unexpected changes to the game.
+
+Depending on where this unexpected change is, this bug could be serious.
+
+
+Here is the output of my tests.
+
+TESTING discardCard
+****************Test 1: Trash, large hand, discard first card
+PASSED...Return value is correct
+PASSED...lastCard is now in position of discarded card
+PASSED...player has one fewer card in hand
+FAILED...No undesired changes were made to the game
+****************Test 2: Trash, 1 card, discard first card
+PASSED...Return value is correct
+PASSED...Player's hand is now empty
+FAILED...No undesired changes were made to the game
+****************Test 3: Trash, large hand, discard last card
+PASSED...Return value is correct
+PASSED...Player's hand is now one less
+FAILED...No undesired changes were made to the game
+****************Test 4: Don't trash, large hand, discard first card
+PASSED...Return value is correct
+PASSED...handCount has decreased by 1
+PASSED...lastCard has replaced discarded card
+PASSED...played card count has increased by 1
+PASSED...playedCards deck now has discarded card on top
+FAILED...No undesired changes were made to the game
+****************Test 5: Don't trash, 1 card, discard first card
+PASSED...Return value is correct
+PASSED...handCount has decreased by 1
+PASSED...played card count has increased by 1
+PASSED...playedCards deck now has discarded card on top
+FAILED...No undesired changes were made to the game
+****************Test 6: Don't trash, large hand, discard last card
+PASSED...Return value is correct
+PASSED...handCount has decreased by 1
+PASSED...played card count has increased by 1
+PASSED...playedCards deck now has discarded card on top
+FAILED...No undesired changes were made to the game
+discardCard(): WARNING: At least one test failed!
+
+Steps to Produce/Reproduce
+--------------------------
+1. Initialize a valid gameState using initializeGame() with the correct parameters.
+2. Clone this initial state for later comparison
+3. Call discardCard with any set of dependencies, as described above in my
+    test output results.
+4. Make the changes to the cloned initial state as described by the specification of 
+    discardCard.
+5. Compare the cloned state with the state. They will not be identical.
+
+
+Expected Results
+----------------
+    Cloned and uncloned states are identical.
+
+Actual Results
+--------------
+    The two states differ.
+
+
+
+
+
+
+Title: Smithy does not draw the correct number of cards.
+
+Class: Serious Bug
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
+
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
+
+Is it reproducible: Yes 
+
+Description
+===========
+Calling smithyPlay from a very typical gameState does not 
+draw 3 cards, as expected. It seems to draw only 1 card.
+
+Steps to Produce/Reproduce
+--------------------------
+1. Generate a normal gameState with initializeGame()
+2. Set the player's deckCount to 5 cards and set the top three cards of the deck 
+        to all be adventurer cards.
+3. Call smithyPlay()
+
+
+Expected Results
+----------------
+The player's hand count should increment by 3, and the top three cards of the deck 
+    should be the top three cards in the player's hand. The player's deck count 
+    should decrease by 3.
+
+Actual Results
+--------------
+The player's hand count only increments by 1, and perhaps as a consequence,
+    the top three in hand are not the top three cards of the deck. Also the player's
+    deck count only decreases by 2, which is rather puzzling since the hand count 
+    increased by 1.
+
+
+
+
+
+
+Title: adventurerPlay() has incorrect side effects on the player's 
+        deck and discard counts
+
+Class: Serious Bug
+
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
+
+
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
+
+Is it reproducible: Yes 
+
+Description
+===========
+I have called adventurerPlay under various conditions:
+    1. When the top two cards in deck are treasures.
+    2. When the bottom two cards in deck are treasures.
+    3. When there is one treasure in the deck and one in the discard.
+
+In the first case, the player's deck decreases by too many cards.
+In the second case, when the player does not discard enough cards into discard pile
+In the third case, the player does not draw enough cards from the deck.
+
+
+Steps to Produce/Reproduce
+--------------------------
+To repoduce the first case from a valid gameState, set the top two cards in the deck to
+be treasures; e.g. state->hand[player][state->handCount[player] - 1] = gold;
+Then call adventurerPlay.
+
+To reproduce the second case, give the player a deck of 5 cards, set the discard count to 0,
+    and set the bottom two cards in the deck to be treasures;
+    e.g. state->hand[player][0] = copper; Then call adventurerPlay
+
+To reproduce the third case, give the player a deck of 5 cards and a discard of 1 card. Place a treasure at the top of the deck make the only card in the discard pile a treasure. Then call adventurerPlay.
+
+
+
+Expected vs Actual Results
+----------------
+In the first case, we expect the player to have two fewer cards in the deck. Instead, he has 5 fewer cards.
+
+In the second case, we expect the player to have discarded 3 cards into the discard pile.
+Instead, he only discards 1 card.
+
+In the third case, we expect the player to have two new cards in hand. Instead, the player 
+has 4 new cards in hand.
+    

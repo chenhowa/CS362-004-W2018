@@ -6,17 +6,18 @@ Title:
 Class:
 e.g. "Feature Request", "System Error", "Serious Bug"
 
-Date:           
-Reported By:   
-Email:      
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
 
 
-Product:                        Version:
-Platform:                       Version:
-Browser:                        Version:
-URL:        
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
 
-Is it reproducible: Yes / Occasionally / One Time / No
+Is it reproducible: Yes 
 
 Description
 ===========
