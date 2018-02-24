@@ -205,10 +205,13 @@ In the first case, the player's deck decreases by too many cards.
 In the second case, when the player does not discard enough cards into discard pile
 In the third case, the player does not draw enough cards from the deck.
 
+My suspicion is that these 3 bugs are all related, since they all pertain to the 
+same unit function.
+
 
 Steps to Produce/Reproduce
 --------------------------
-To repoduce the first case from a valid gameState, set the top two cards in the deck to
+To reproduce the first case from a valid gameState, set the top two cards in the deck to
 be treasures; e.g. state->hand[player][state->handCount[player] - 1] = gold;
 Then call adventurerPlay.
 
@@ -230,3 +233,143 @@ Instead, he only discards 1 card.
 In the third case, we expect the player to have two new cards in hand. Instead, the player 
 has 4 new cards in hand.
     
+
+
+
+
+Title: The council_room branch in cardEffect() does not draw the correct number of cards.
+
+Class: Semi-serious Bug
+
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
+
+
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
+
+Is it reproducible: Yes 
+
+Description
+===========
+After calling the council_room branch from cardEffect, my tests found that the player did not receive 4 extra cards in hand.
+
+
+Steps to Produce/Reproduce
+--------------------------
+1. Set up a normal game state with initializeGame()
+2. Set the number of players to 4 (MAX_PLAYERS);
+3. Give each player in the game a deckCount of 4
+4. Set each card in each player's deck to be an adventurer.
+5. Call cardEffect(council_room, -1, -1, -1, &postState, 0, 0); 
+
+
+Expected Results
+----------------
+The player should have 4 extra adventurer at the top of his hand.
+
+Actual Results
+--------------
+The player only has 3 new adventurers at the top of his hand.
+
+
+
+
+
+Title: minion branch of cardEffect leads to an unexpected change somewhere in gameState.    
+
+Class: Minor Bug
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
+
+
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
+
+Is it reproducible: Yes 
+
+Description
+===========
+From a valid gameState, I called the minion branch of cardEffect. The correct things happen
+as a result. The issue is that some unexpected change happens somewhere.
+
+
+Steps to Produce/Reproduce
+--------------------------
+1. Initialize a valid game state using initalizeGame(), with 3 players;
+2. Save this initial game state.
+3. Call cardEffect(minion, 1, 0, -1, &state, 0, 0);
+4. Update the saved initial game state manually to execute the specification of the minion:
+    * Increase initial->coins by 2.
+    * Increase initial->numActions by 1
+5. Compare the initial state and state using memcmp(&initial, &state, sizeof(struct gameState)).
+
+Expected Results
+----------------
+Byte for byte, initial and state should be identical
+
+Actual Results
+--------------
+They are not identical. Something outside the specification of minion occurred.
+
+
+
+
+
+Title: Calling minion branch of cardEffect with Choice 2 does not correctly
+    discard cards.
+
+Class: Serious Bug
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
+
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
+
+Is it reproducible: Yes 
+
+Description
+===========
+From a valid game state, I called the minion branch of cardEffect with Choice 2. I 
+then checked the discard piles of every player and noticed that they were not updated
+according to the minion specification.
+
+
+Steps to Produce/Reproduce
+--------------------------
+1. Initialize a valid game with 4 players using initializeGame.
+2. Give the MainPlayer
+    * a hand of 3 cards, full of adventurer. 
+    * a deck of 4 cards, full of smithy.
+    * an empty discard.
+3. Give the remaining players:
+    * a deck of 4 cards, full of smithy.
+    * an empty discard.
+    * 1 player should have a hand of 4 adventurers.
+    * 1 player should have a hand of 5 adventurers.
+    * 1 player should have a hand of 6 adventurers
+4. Call cardEffect(minion, 1, 0, -1, &state, 0, 0);
+
+Expected Results
+----------------
+The MainPlayer's discard should now have 3 cards.
+The player with 4 cards in hand should now have a discard with 4 cards.
+The player with 5 cards in hand should now have a discard with 5 cards.
+The player with 6 cards in hand should now have a discard with 6 cards.
+
+Actual Results
+--------------
+Every player has 0 cards in their discard pile.
+
