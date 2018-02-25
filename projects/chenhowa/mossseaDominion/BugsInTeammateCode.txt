@@ -468,3 +468,88 @@ a handCount of 302 and a deckCount + discardCount of 11
 
 
 
+Title: smithyPlay does not correctly draw 3 cards
+
+Class:
+e.g. "Feature Request", "System Error", "Serious Bug"
+
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
+
+
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
+
+Is it reproducible: Yes 
+
+Description
+===========
+In many randomly generated game states, calling smithyPlay does not lead to
+the expected results.
+
+
+
+Steps to Produce/Reproduce
+--------------------------
+To reproduce, use the following random state generator code
+
+    int numTests = 2000;
+    // Most of this code is taken from testDrawCard.c.
+    // It sets up the random tests as demonstrated in the video lecture
+    int i, n, p;
+    struct gameState G;
+    printf ("Testing smithy.\n");
+    printf ("RANDOM TESTS.\n");
+    SelectStream(2);
+    PutSeed(3);         /***** Uses seed value of 3 *****/
+    for (n = 0; n < numTests; n++) {
+        printf("iteration %i: ", n);
+        fflush(stdout);
+        for (i = 0; i < sizeof(struct gameState); i++) {
+            ((char*)&G)[i] = floor(Random() * 256);
+        }
+        p = floor(Random() * 2);
+        G.whoseTurn = p;
+        G.deckCount[p] = floor(Random() * (MAX_DECK));
+        G.discardCount[p] = floor(Random() * (MAX_DECK - 5 - G.deckCount[p])); // ensure no overflow
+        G.handCount[p] = floor(Random() * (MAX_HAND - 5)); //ensure no oveflow
+
+        //Add valid cards to discard and deck
+        for(i = 0; i < G.deckCount[p]; i++) {
+            G.deck[p][i] = floor(Random() * treasure_map); 
+        }
+        for(i = 0; i < G.discardCount[p]; i++) {
+            G.discard[p][i] = floor(Random() * treasure_map); 
+        }
+
+        //Make the played card count reasonable.
+        G.playedCardCount = floor(Random() * (MAX_DECK - 5));
+    }
+
+Expected Results
+----------------
+Calling smithyPlay on the iteration 0 gameState should give a handCount of 53
+and a deckCount of 187
+
+Calling smithyPlay on the iteration 50 gameState should give a handCount of
+400 and a discardCount + deckCount of 344
+
+
+Actual Results
+--------------
+calling smithyPlay on iteration 0 gameState gives a handCount of 51 and a 
+deckCount of 188
+
+Calling smithyPlay on the iteration 50 gameState should give a handCount of
+398 and a discardCount + deckCount of 345
+
+
+
+
+
+
+
