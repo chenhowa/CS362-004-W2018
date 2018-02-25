@@ -441,6 +441,7 @@ Set up the game state according to the following random generator.
     }
 
 
+For each iteration's game state G, call adventurerPlay(-1, -1, -1, G, 0, 0);
 
 Expected Results
 ----------------
@@ -528,6 +529,8 @@ To reproduce, use the following random state generator code
         //Make the played card count reasonable.
         G.playedCardCount = floor(Random() * (MAX_DECK - 5));
     }
+
+For each iteration's game state G, call smithyPlay(-1, -1, -1, G, 0, 0);
 
 Expected Results
 ----------------
@@ -635,7 +638,7 @@ Use the following random state generate to generate random gameStates.
         G.whoseTurn = p;
     }
 
-For each iteration, call cardEffect(minion, choice1, choice2, -1, post, handPos, 0);
+For each iteration's game state G, call cardEffect(minion, choice1, choice2, -1, G, handPos, 0);
 
 
 Expected Results
