@@ -373,3 +373,98 @@ Actual Results
 --------------
 Every player has 0 cards in their discard pile.
 
+
+
+
+
+Title: adventurerPlay draws and discards far too many cards
+
+Class: Serious Bug
+
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
+
+
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
+
+Is it reproducible: Yes 
+
+Description
+===========
+In various randomly generated game states, calling adventurerPlay draws far
+more cards than needed to draw 2 treasures into the hand, and discards too
+many cards in the process
+
+
+
+Steps to Produce/Reproduce
+--------------------------
+Set up the game state according to the following random generator.
+
+
+    int numTests = 2000;
+    // Most of this code is taken from testDrawCard.c.
+    // It sets up the random tests as demonstrated in the video lecture
+    int i, n, p;
+    struct gameState G;
+    printf ("Testing adventurer.\n");
+    printf ("RANDOM TESTS.\n");
+    SelectStream(2);
+    PutSeed(3);       /*** USES RANDOM SEED OF 3 ****/
+    for (n = 0; n < numTests; n++) {
+        printf("iteration %i: ", n);
+        fflush(stdout);
+        for (i = 0; i < sizeof(struct gameState); i++) {
+            ((char*)&G)[i] = floor(Random() * 256);
+        }
+        p = floor(Random() * 2);
+        G.whoseTurn = p;
+        G.deckCount[p] = floor(Random() * 250);
+        G.discardCount[p] = floor(Random() * (250 - G.deckCount[p] + 1)); // ensure no overflow
+        G.handCount[p] = floor(Random() * (MAX_HAND - 5)); //ensure no oveflow
+
+        //Add valid cards to discard and deck
+        for(i = 0; i < G.deckCount[p]; i++) {
+            G.deck[p][i] = floor(Random() * treasure_map); 
+        }
+        for(i = 0; i < G.discardCount[p]; i++) {
+            G.discard[p][i] = floor(Random() * treasure_map); 
+        }
+        //Make the played card count reasonable.
+        G.playedCardCount = floor(Random() * (MAX_DECK - 5));
+
+    }
+
+
+
+Expected Results
+----------------
+Calling adventurerPlay on the iteration 0 generated gameState should lead to a
+handCount of 52, a deckCount of 78, and a discardCount of 39 for the player.
+
+Calling adventurerPlay on the iteration 16 generated gameState should lead to a 
+handCount of 280 and a deckCount + discardCount of 143
+
+Calling adventurerPlay on the iteration 262 generated gameState should lead to
+a handCount of 297 and a deckCount + discardCount of 16
+
+Actual Results
+--------------
+Calling adventurerPlayon the 0th generated gameState leads to a 
+handCount of 79, a deckCount of 41, and a discardCount of 49
+
+Calling adventurerPlay on the iteration 16 generated gameState lead to a 
+handCount of 293 and a deckCount + discardCount of 130
+
+Calling adventurerPlay on the iteration 262 generated gameState lead to
+a handCount of 302 and a deckCount + discardCount of 11
+
+
+
+
+
