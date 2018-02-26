@@ -365,7 +365,6 @@ Steps to Produce/Reproduce
 Expected Results
 ----------------
 The MainPlayer's discard should now have 3 cards.
-The player with 4 cards in hand should now have a discard with 4 cards.
 The player with 5 cards in hand should now have a discard with 5 cards.
 The player with 6 cards in hand should now have a discard with 6 cards.
 
@@ -552,8 +551,7 @@ Calling smithyPlay on the iteration 50 gameState should give a handCount of
 
 
 
-Title: The minion branch of cardEffect leads to unexpected changes for Choice
-1 and incorrect discard and deck counts for all players involved.
+Title: The minion branch of cardEffect leads to incorrect discard and deck counts for all players involved.
 
 Class: Serious Bug.
 
