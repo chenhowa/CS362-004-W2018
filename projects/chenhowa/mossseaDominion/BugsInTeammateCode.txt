@@ -373,3 +373,290 @@ Actual Results
 --------------
 Every player has 0 cards in their discard pile.
 
+
+
+
+
+Title: adventurerPlay draws and discards far too many cards
+
+Class: Serious Bug
+
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
+
+
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
+
+Is it reproducible: Yes 
+
+Description
+===========
+In various randomly generated game states, calling adventurerPlay draws far
+more cards than needed to draw 2 treasures into the hand, and discards too
+many cards in the process
+
+
+
+Steps to Produce/Reproduce
+--------------------------
+Set up the game state according to the following random generator.
+
+
+    int numTests = 2000;
+    // Most of this code is taken from testDrawCard.c.
+    // It sets up the random tests as demonstrated in the video lecture
+    int i, n, p;
+    struct gameState G;
+    printf ("Testing adventurer.\n");
+    printf ("RANDOM TESTS.\n");
+    SelectStream(2);
+    PutSeed(3);       /*** USES RANDOM SEED OF 3 ****/
+    for (n = 0; n < numTests; n++) {
+        printf("iteration %i: ", n);
+        fflush(stdout);
+        for (i = 0; i < sizeof(struct gameState); i++) {
+            ((char*)&G)[i] = floor(Random() * 256);
+        }
+        p = floor(Random() * 2);
+        G.whoseTurn = p;
+        G.deckCount[p] = floor(Random() * 250);
+        G.discardCount[p] = floor(Random() * (250 - G.deckCount[p] + 1)); // ensure no overflow
+        G.handCount[p] = floor(Random() * (MAX_HAND - 5)); //ensure no oveflow
+
+        //Add valid cards to discard and deck
+        for(i = 0; i < G.deckCount[p]; i++) {
+            G.deck[p][i] = floor(Random() * treasure_map); 
+        }
+        for(i = 0; i < G.discardCount[p]; i++) {
+            G.discard[p][i] = floor(Random() * treasure_map); 
+        }
+        //Make the played card count reasonable.
+        G.playedCardCount = floor(Random() * (MAX_DECK - 5));
+
+    }
+
+
+For each iteration's game state G, call adventurerPlay(-1, -1, -1, G, 0, 0);
+
+Expected Results
+----------------
+Calling adventurerPlay on the iteration 0 generated gameState should lead to a
+handCount of 52, a deckCount of 78, and a discardCount of 39 for the player.
+
+Calling adventurerPlay on the iteration 16 generated gameState should lead to a 
+handCount of 280 and a deckCount + discardCount of 143
+
+Calling adventurerPlay on the iteration 262 generated gameState should lead to
+a handCount of 297 and a deckCount + discardCount of 16
+
+Actual Results
+--------------
+Calling adventurerPlayon the 0th generated gameState leads to a 
+handCount of 79, a deckCount of 41, and a discardCount of 49
+
+Calling adventurerPlay on the iteration 16 generated gameState lead to a 
+handCount of 293 and a deckCount + discardCount of 130
+
+Calling adventurerPlay on the iteration 262 generated gameState lead to
+a handCount of 302 and a deckCount + discardCount of 11
+
+
+
+
+
+Title: smithyPlay does not correctly draw 3 cards
+
+Class: Serious Bug
+
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
+
+
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
+
+Is it reproducible: Yes 
+
+Description
+===========
+In many randomly generated game states, calling smithyPlay does not lead to
+the expected results.
+
+
+
+Steps to Produce/Reproduce
+--------------------------
+To reproduce, use the following random state generator code
+
+    int numTests = 2000;
+    // Most of this code is taken from testDrawCard.c.
+    // It sets up the random tests as demonstrated in the video lecture
+    int i, n, p;
+    struct gameState G;
+    printf ("Testing smithy.\n");
+    printf ("RANDOM TESTS.\n");
+    SelectStream(2);
+    PutSeed(3);         /***** Uses seed value of 3 *****/
+    for (n = 0; n < numTests; n++) {
+        printf("iteration %i: ", n);
+        fflush(stdout);
+        for (i = 0; i < sizeof(struct gameState); i++) {
+            ((char*)&G)[i] = floor(Random() * 256);
+        }
+        p = floor(Random() * 2);
+        G.whoseTurn = p;
+        G.deckCount[p] = floor(Random() * (MAX_DECK));
+        G.discardCount[p] = floor(Random() * (MAX_DECK - 5 - G.deckCount[p])); // ensure no overflow
+        G.handCount[p] = floor(Random() * (MAX_HAND - 5)); //ensure no oveflow
+
+        //Add valid cards to discard and deck
+        for(i = 0; i < G.deckCount[p]; i++) {
+            G.deck[p][i] = floor(Random() * treasure_map); 
+        }
+        for(i = 0; i < G.discardCount[p]; i++) {
+            G.discard[p][i] = floor(Random() * treasure_map); 
+        }
+
+        //Make the played card count reasonable.
+        G.playedCardCount = floor(Random() * (MAX_DECK - 5));
+    }
+
+For each iteration's game state G, call smithyPlay(-1, -1, -1, G, 0, 0);
+
+Expected Results
+----------------
+Calling smithyPlay on the iteration 0 gameState should give a handCount of 53
+and a deckCount of 187
+
+Calling smithyPlay on the iteration 50 gameState should give a handCount of
+400 and a discardCount + deckCount of 344
+
+
+Actual Results
+--------------
+calling smithyPlay on iteration 0 gameState gives a handCount of 51 and a 
+deckCount of 188
+
+Calling smithyPlay on the iteration 50 gameState should give a handCount of
+398 and a discardCount + deckCount of 345
+
+
+
+
+Title: The minion branch of cardEffect leads to unexpected changes for Choice
+1 and incorrect discard and deck counts for all players involved.
+
+Class: Serious Bug.
+
+
+Date: Feb 23, 2018 
+Reported By: Howard Chen 
+Email: chenhowa@oregonstate.edu 
+
+
+Product: dominion.c             Version: N/A
+Platform: Linux Pop!_OS         Version: 17.10
+Browser: N/A                    Version: N/A
+URL: N/A 
+
+Is it reproducible: Yes 
+
+Description
+===========
+In multiple randomly generated gameStates, calling the minion effect of
+cardEffect leads to incorrect post-call card counts
+
+
+Steps to Produce/Reproduce
+--------------------------
+Use the following random state generate to generate random gameStates.
+
+    int numTests = 2000;
+    // Most of this code is taken from testDrawCard.c.
+    // It sets up the random tests as demonstrated in the video lecture
+    int i, n, p;
+    int otherPlayer;
+    int handPos;
+    int choice1, choice2;
+    struct gameState G;
+    printf ("Testing minion.\n");
+    printf ("RANDOM TESTS.\n");
+    SelectStream(2);
+    PutSeed(3);             /*********  Uses a seed value of 3!!!  **********/
+    for (n = 0; n < numTests; n++) {
+        printf("iteration %i: ", n);
+        fflush(stdout);
+        for (i = 0; i < sizeof(struct gameState); i++) {
+            ((char*)&G)[i] = floor(Random() * 256);
+        }
+        p = floor(Random() * 2);
+        G.whoseTurn = p;
+        G.numPlayers = 2; //Set standard value of 2 to avoid any issues.
+        G.deckCount[p] = floor(Random() * 50 + 1);
+        G.discardCount[p] = floor(Random() * 50 + 1); // ensure no overflow
+        G.handCount[p] = floor(Random() * 50 + 1); //ensure no oveflow
+
+        G.numActions = floor(Random() * 500);
+        G.coins = floor(Random() * 500);
+
+        //Add valid cards to discard and deck
+        for(i = 0; i < G.deckCount[p]; i++) {
+            G.deck[p][i] = floor(Random() * treasure_map); 
+        }
+        for(i = 0; i < G.discardCount[p]; i++) {
+            G.discard[p][i] = floor(Random() * treasure_map); 
+        }
+
+        // Choose a handPos for discarding for the player.
+        handPos = floor(Random() * G.handCount[p]);
+
+        //Choose a choice for the player. Recall that it is a binary choice.
+        // between choice1 and choice 2
+        choice1 = floor(Random() * 2); // 0 or 1?
+        choice2 = (choice1 + 1) % 2; // Be whatever choice1 is not.  REPEAT FOR THE SECOND PLAYER
+        otherPlayer = (p + 1) % 2;
+        G.deckCount[otherPlayer] = floor(Random() * 50 + 1);
+        G.discardCount[otherPlayer] = floor(Random() * 50 + 1); 
+        G.handCount[otherPlayer] = floor(Random() * 50 + 1); 
+        for(i = 0; i < G.deckCount[otherPlayer]; i++) {
+            G.deck[otherPlayer][i] = floor(Random() * treasure_map); 
+        }
+        for(i = 0; i < G.discardCount[otherPlayer]; i++) {
+            G.discard[otherPlayer][i] = floor(Random() * treasure_map); 
+        }
+        G.playedCardCount = floor(Random() * 12 );
+        
+        G.whoseTurn = p;
+    }
+
+For each iteration's game state G, call cardEffect(minion, choice1, choice2, -1, G, handPos, 0);
+
+
+Expected Results
+----------------
+Calling cardEffect's minion branch on the iteration 2 gameState should give
+the player a combined discardCount + deckCount = 77, which is simply the 
+precall state's discardCount + deckCount + handCount - 4, since the player
+simply discards his hand and draws 4 cards.
+
+Similarly, calling cardEffect's minion branch on the iteration 2 gameState should give
+the OTHER player a combined discardCount + deckCount = 89.
+
+
+Actual Results
+--------------
+Calling cardEffect's minion branch on the iteration 2 gameState gives the
+player a combined discardCount + deckCount = 33.
+
+Calling cardEffect's minion branch on the iteration 2 gameState gives the
+OTHER player a combined discardCount + deckCount = 57.
+
