@@ -1,0 +1,18 @@
+
+unittest3.c: 
+
+TESTING isGameOver
+*************Test 1: Neither condition is satisfied
+PASSED...Game is not over when conditions are not satisfied
+PASSED...Game state was not changed
+*************Test 2: Province pile is empty
+PASSED...Game is over when province supply pile is empty
+PASSED...Game state was not changed
+*************Test 3: Supply piles are empty
+PASSED...Game is over when 3 supply piles are empty
+PASSED...Game state was not changed
+*************Test 4: 3 piles are empty AND province pile is empty
+PASSED...Game is over when both conditions apply
+PASSED...Game state was not changed
+isGameOver(): SUCCESS: All tests passed!
+
