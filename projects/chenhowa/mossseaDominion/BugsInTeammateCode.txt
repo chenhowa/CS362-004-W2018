@@ -1,4 +1,4 @@
-
+Bug id: 0001
 Title: isGameOver() does not always detect the Game is over when
         3 supply piles are empty
 
@@ -42,7 +42,7 @@ isGameOver() returns 0 (FALSE)
 
 
 
-
+Bug id: 0002
 Title: discardCard() makes unexpected changes to the game state.
 
 Class:
@@ -129,7 +129,7 @@ Actual Results
 
 
 
-
+Bug id: 0003
 Title: Smithy does not draw the correct number of cards.
 
 Class: Serious Bug
@@ -175,7 +175,7 @@ The player's hand count only increments by 1, and perhaps as a consequence,
 
 
 
-
+Bug id: 0004
 Title: adventurerPlay() has incorrect side effects on the player's 
         deck and discard counts
 
@@ -236,7 +236,7 @@ has 4 new cards in hand.
 
 
 
-
+Bug id: 0005
 Title: The council_room branch in cardEffect() does not draw the correct number of cards.
 
 Class: Semi-serious Bug
@@ -279,7 +279,7 @@ The player only has 3 new adventurers at the top of his hand.
 
 
 
-
+Bug id: 0006
 Title: minion branch of cardEffect leads to an unexpected change somewhere in gameState.    
 
 Class: Minor Bug
@@ -323,7 +323,7 @@ They are not identical. Something outside the specification of minion occurred.
 
 
 
-
+Bug id: 0007
 Title: Calling minion branch of cardEffect with Choice 2 does not correctly
     discard cards.
 
@@ -375,7 +375,7 @@ Every player has 0 cards in their discard pile.
 
 
 
-
+Bug id: 0008
 Title: adventurerPlay draws and discards far too many cards
 
 Class: Serious Bug
@@ -467,7 +467,7 @@ a handCount of 302 and a deckCount + discardCount of 11
 
 
 
-
+Bug id: 0009
 Title: smithyPlay does not correctly draw 3 cards
 
 Class: Serious Bug
@@ -550,7 +550,7 @@ Calling smithyPlay on the iteration 50 gameState should give a handCount of
 
 
 
-
+Bug id: 0010
 Title: The minion branch of cardEffect leads to incorrect discard and deck counts for all players involved.
 
 Class: Serious Bug.
